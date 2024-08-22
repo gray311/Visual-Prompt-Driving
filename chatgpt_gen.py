@@ -21,13 +21,13 @@ if __name__ == "__main__":
     model_name = "gpt"
 
     if model_name == "gemini":
-        agent = GeminiEvaluator(api_key="AIzaSyAr6OfqGdlxo0BuKDE_8gJvZf00Vd6TRH0")
+        agent = GeminiEvaluator(api_key="")
     
     elif model_name == "gpt":
         agent = GPTEvaluator(api_key="")
 
     instruction = "Please change the lane and proceed quickly through the intersection ahead."
-    image_file = "./outputs/n008-2018-08-01-15-16-36-0400__CAM_FRONT__1533151610412404.jpg"
+    image_file = "./outputs/result/000000.jpg"
 
     question = {
         "prompted_system_content": system_message,
