@@ -1,0 +1,70 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+- **Object IDs and Lanes:**
+  - **ID 10 (Car):** Moving towards the ego vehicle in the left lane.
+  - **ID 12 (Car):** Stationary in the right lane.
+  - **ID 14 (Car):** Stationary in the left lane.
+  - **ID 15 (Car):** Stationary in the right lane.
+  - **ID 16 (Car):** Stationary in the left lane.
+  - **ID 17 (Car):** Stationary in the right lane.
+  - **ID 18 (Car):** Stationary in the right lane.
+
+#### Traffic Light:
+- No traffic light is visible in the frames.
+
+#### Ego Analysis:
+- **Speed:** The ego vehicle's speed has been relatively constant, with minor fluctuations.
+- **Acceleration:** The ego vehicle has been decelerating slightly over the last 4 seconds.
+- **Turn Angle:** The ego vehicle has been maintaining a nearly straight path.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Planned Action:** Initiate a 3-point turn to the left.
+
+#### Speed:
+- **Speed Adjustment:** Decelerate to zero to prepare for the 3-point turn.
+
+#### Summary:
+- **Overall Driving Plan:** 
+  - Decelerate to a stop.
+  - Turn the steering wheel fully to the left and move forward.
+  - Reverse while turning the steering wheel fully to the right.
+  - Move forward again while turning the steering wheel to the left to complete the 3-point turn.
+
+### MPC Signals:
+```json
+{
+  "Q": 3,
+  "R": 0.1,
+  "Q_h": 4,
+  "desired_speed": 2,
+  "desired_headway": 2,
+  "desired_yaw_rate": 3,
+  "yaw_rate_weight": 4
+}
+```
+
+### Detailed Steps for 3-Point Turn:
+1. **Step 1: Decelerate to Zero**
+   - **Behavior:** STOP
+   - **Speed:** DECELERATION TO ZERO
+   - **Yaw Rate:** 0 (straight)
+
+2. **Step 2: Turn Left and Move Forward**
+   - **Behavior:** TURN LEFT
+   - **Speed:** ACCELERATION
+   - **Yaw Rate:** 3 (sharp left turn)
+
+3. **Step 3: Reverse and Turn Right**
+   - **Behavior:** TURN RIGHT
+   - **Speed:** REVERSE
+   - **Yaw Rate:** -3 (sharp right turn)
+
+4. **Step 4: Move Forward and Turn Left**
+   - **Behavior:** TURN LEFT
+   - **Speed:** ACCELERATION
+   - **Yaw Rate:** 3 (sharp left turn)
+
+By following these steps, the ego vehicle will successfully complete the 3-point turn while adhering to traffic rules and avoiding collisions with nearby objects.

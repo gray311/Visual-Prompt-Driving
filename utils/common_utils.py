@@ -29,13 +29,23 @@ class CommonUtils:
         raw_image_name_list = os.listdir(raw_image_path)
         raw_image_name_list.sort()
         for raw_image_name in raw_image_name_list:
+            if ".jpg" not in raw_image_name: continue
             image_path = os.path.join(raw_image_path, raw_image_name)
             image = cv2.imread(image_path)
+            height, width = image.shape[:2]
+
             if image is None:
                 raise FileNotFoundError("Image file not found.")
             # load mask
             mask_npy_path = os.path.join(mask_path, "mask_"+raw_image_name.split(".")[0]+".npy")
-            mask = np.load(mask_npy_path)
+            
+            try:
+                mask = np.load(mask_npy_path)
+            except:
+                output_image_path = os.path.join(output_path, raw_image_name)
+                cv2.imwrite(output_image_path, image)
+                print(f"Annotated image saved as {output_image_path}")
+                continue
             # color map
             unique_ids = np.unique(mask)
             
@@ -48,8 +58,14 @@ class CommonUtils:
                     object_mask = (mask == uid)
                     all_object_masks.append(object_mask[None])
             
-            # get n masks: (n, h, w)
-            all_object_masks = np.concatenate(all_object_masks, axis=0)
+            try:
+                # get n masks: (n, h, w)
+                all_object_masks = np.concatenate(all_object_masks, axis=0)
+            except:
+                output_image_path = os.path.join(output_path, raw_image_name)
+                cv2.imwrite(output_image_path, image)
+                print(f"Annotated image saved as {output_image_path}")
+                continue
             
             # load box information
             file_path = os.path.join(json_path, "mask_"+raw_image_name.split(".")[0]+".json")

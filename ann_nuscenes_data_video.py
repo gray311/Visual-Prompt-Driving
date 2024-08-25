@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import supervision as sv
 import copy
 import json
+import pickle
 from PIL import Image
 from sam2.build_sam import build_sam2_video_predictor, build_sam2
 from sam2.sam2_image_predictor import SAM2ImagePredictor
@@ -94,12 +95,15 @@ def get_filename(path):
 
     return frame_names
 
+
 def generate_realtime_data(scene_id):
     video_path = f"./images/nuscenes_scene_{scene_id}"
-    shutil.rmtree(video_path)
-    os.mkdir(video_path)
 
-    loader = NuscenesLoader(version="v1.0-mini", dataroot="/data/yingzi_ma/Visual-Prompt-Driving/workspace/nuscenes", frequency=1)
+    if not os.path.exists(video_path):
+        # shutil.rmtree(video_path)
+        os.mkdir(video_path)
+
+    loader = NuscenesLoader(version="v1.0-trainval", dataroot="/data/yingzi_ma/Visual-Prompt-Driving/workspace/nuscenes", frequency=1)
     metadata = loader.load(scene_id)
     samples = metadata['sample_descriptions']
     for sample_idx, line in samples.items():
@@ -108,9 +112,12 @@ def generate_realtime_data(scene_id):
         image = Image.open(frame_path)
         image.save(os.path.join(video_path, image_name))
     
-    output_dir = "./outputs"
+    output_dir = f"./outputs/nuscenes_scene_{scene_id}"
+    if not os.path.exists(output_dir):
+        # shutil.rmtree(output_dir)
+        os.mkdir(output_dir)
     # 'output_video_path' is the path to save the final video
-    output_video_path = "./outputs/output.mp4"
+    output_video_path = f"./outputs/nuscenes_scene_{scene_id}/output.mp4"
 
     CommonUtils.creat_dirs(output_dir)
     mask_data_dir = os.path.join(output_dir, "mask_data")
@@ -137,197 +144,235 @@ def concat_image(image1, image2):
     return new_image
 
 
-def run_agent(ego_vel, ego_accel, ego_angle, video_dir, result_dir):
+def run_agent(samples, video_dir, result_dir):
 
-    frames, marks, ego_states = [], [], []
-    frame_num, frame_interval, start_frame_idx = 4, 2, 8 # get history 4 frames from 0s, sampling frequency 1s.
+    frame_num, frame_interval = 4, 2 # get history 4 frames from 0s, sampling frequency 1s.
+    frame_span = (frame_num - 1) * frame_interval
+
     video_files = get_filename(video_dir)
     result_files = get_filename(result_dir)
+
+    start_frame_list = [i * frame_span  for i in range(len(video_files) // frame_span)] # No need to predict every frame
+
+    for start_frame_idx in start_frame_list:
+        frames, marks, ego_states = [], [], []
+        output_dir = os.path.join(video_dir, f"s{start_frame_idx}_n{frame_num}_i{frame_interval}")
+        if not os.path.exists(output_dir):
+            # shutil.rmtree(output_dir)
+            os.mkdir(output_dir)
+
+        for idx, filename in enumerate(video_files):
+            if idx >= start_frame_idx and (idx - start_frame_idx) % frame_interval == 0 and (idx - start_frame_idx) / frame_interval < frame_num: 
+                frames.append(Image.open(os.path.join(video_dir, filename)))
+                marks.append(Image.open(os.path.join(result_dir, result_files[idx])))
+                ego_states.append((samples[idx]["ego_vehicle_velocity"], samples[idx]["ego_vehicle_accelerate"], samples[idx]["ego_vehicle_heading"]))
+                
+                if idx - start_frame_idx == (frame_num - 1) * frame_interval:
+                    ego_future_trajectory = samples[idx]['ego_future_trajectory']
+                    ego_future_trajectory_mask = samples[idx]['ego_future_trajectory_mask']
+                    token = samples[idx]['sample_token']
+                
+
+        image_list = []
+        for frame, mark in zip(frames, marks):
+            image = concat_image(frame, mark)
+            image.save(f"./outputs/{len(image_list)}.png")
+            image_list.append(image)
+
+        from api import GeminiEvaluator, GPTEvaluator, system_message, user_message
+
+        model_name = "gpt"
+        if model_name == "gemini":
+            agent = GeminiEvaluator(api_key="")
+        elif model_name == "gpt":
+            agent = GPTEvaluator(api_key="")
     
-    for idx, filename in enumerate(video_files):
-        if idx >= start_frame_idx and (idx - start_frame_idx) % frame_interval == 0 and (idx - start_frame_idx) / frame_interval < frame_num: 
-            print(idx)
-            frames.append(Image.open(os.path.join(video_dir, filename)))
-            marks.append(Image.open(os.path.join(result_dir, result_files[idx])))
+        # navigation_instruction = "Please follow the car in front of you."
+        navigation_instruction = "Please keep forward along the road."
+        ego_vel_str = "[" + ", ".join([str(round(item[0], 2)) for item in ego_states]) + "]"
+        ego_accel_str = "[" + ", ".join([str(round(item[1], 2)) for item in ego_states]) + "]"
+        ego_angle_str = "[" + ", ".join([str(round(item[2], 2)) for item in ego_states]) + "]"
 
-            print(filename, result_files[idx])
+        prompt = user_message.format(speed=ego_vel_str, acceleration=ego_accel_str, angle=ego_angle_str)
+        
+        if navigation_instruction:
+            prompt += "\n\n" + f"3. Navigation command: {navigation_instruction}"
+        prompt += "\n\nOutput:"
 
-            ego_states.append((ego_vel[idx], ego_accel[idx], ego_angle[idx]))
-    
-    image_list = []
-    for frame, mark in zip(frames, marks):
-        image = concat_image(frame, mark)
-        image.save(f"./outputs/{len(image_list)}.png")
-        image_list.append(image)
+        question = {
+            "prompted_system_content": system_message,
+            "prompted_content": prompt,
+            "image_list": image_list,
+        }
 
-    from api import GeminiEvaluator, GPTEvaluator, system_message, user_message
+        # if not os.path.exists(os.path.join(output_dir, "response.txt")):
+        #     response = agent.generate_answer(question)
 
-    model_name = "gpt"
-    if model_name == "gemini":
-        agent = GeminiEvaluator(api_key="")
-    elif model_name == "gpt":
-        agent = GPTEvaluator(api_key="")
- 
-    navigation_instruction = "Please follow the car in front of you."
+        #     with open(os.path.join(output_dir, "prompt.txt"), "w") as f:
+        #         f.write(prompt)
 
-    ego_vel_str = "[ " + ", ".join([str(round(item[0], 2)) for item in ego_states]) + " ]"
-    ego_accel_str = "[ " + ", ".join([str(round(item[1], 2)) for item in ego_states]) + " ]"
-    ego_angle_str = "[ " + ", ".join([str(round(item[2], 2)) for item in ego_states]) + " ]"
+        #     with open(os.path.join(output_dir, "response.txt"), "w") as f:
+        #         f.write(response['prediction'])
+        # else:
+        #     print(
+        #         f"MPC control signals have been generated by VLM!"
+        #     )
 
-    prompt = user_message.format(speed=ego_vel_str, acceleration=ego_accel_str, angle=ego_angle_str)
-    
-    if navigation_instruction:
-        prompt += "\n\n" + f"3. Navigation command: {navigation_instruction}"
-    
-    prompt += "\n\nOutput:"
+        response = agent.generate_answer(question)
 
+        with open(os.path.join(output_dir, "prompt.txt"), "w") as f:
+            f.write(prompt)
 
-    question = {
-        "prompted_system_content": system_message,
-        "prompted_content": prompt,
-        "image_list": image_list,
-    }
+        with open(os.path.join(output_dir, "response.txt"), "w") as f:
+            f.write(response['prediction'])
 
-    response = agent.generate_answer(question)
-    print(response['prediction'])
-    
+        with open(os.path.join(output_dir, "gt_fut_traj.pkl"), "wb") as f:
+            pickle.dump({token: np.array(ego_future_trajectory)}, f)
+        
+        with open(os.path.join(output_dir, "gt_fut_traj_mask.pkl"), "wb") as f:
+            pickle.dump({token: np.array(ego_future_trajectory_mask)}, f)
+
 
 if __name__=="__main__":
+    scene_id_file = "./dataset/scene_id.json"
     sam2_checkpoint = "./workspace/checkpoint/sam2_hiera_large.pt"
     model_cfg = "sam2_hiera_l.yaml"
     image_predictor, video_predictor, grounding_model, processor, device = build_model(sam2_checkpoint, model_cfg)
-
-    samples, video_dir, output_dir, output_video_path, \
-    mask_data_dir, json_data_dir, result_dir, frame_names  = generate_realtime_data(scene_id=0)
-
-    # init video predictor state
-    inference_state = video_predictor.init_state(video_path=video_dir, offload_video_to_cpu=True, async_loading_frames=True)
-    step = 4 # the step to sample frames for Grounding DINO predictor
-
-    sam2_masks = MaskDictionaryModel()
-    PROMPT_TYPE_FOR_VIDEO = "mask" # box, mask or point
-    objects_count = 0
-    prompt_with_gt = False
-    text = "car."
-
-    print(f"Frame num: {len(frame_names)}")
-    for start_frame_idx in range(0, len(frame_names), step):
-        print("start_frame_idx", start_frame_idx)
-        # continue
-        img_path = os.path.join(video_dir, frame_names[start_frame_idx])
-        image = Image.open(img_path)
-        image_base_name = frame_names[start_frame_idx].split(".")[0]
-        mask_dict = MaskDictionaryModel(promote_type = PROMPT_TYPE_FOR_VIDEO, mask_name = f"mask_{image_base_name}.npy")
-
-        if prompt_with_gt:
-            def get_distance(loc):
-                return (loc[0] ** 2 + loc[1] ** 2) ** 0.5
-            instances = samples[start_frame_idx]['sample_annotations']
-            remove_id = []
     
-            OBJECTS = [item['category_name'].split("/")[-1] for instance_id, item in instances.items() if instance_id not in remove_id]
-            input_boxes = [item['bounding_box'] for instance_id, item in instances.items() if instance_id not in remove_id]
-            input_boxes = torch.tensor(input_boxes)
-        else:
-            # run Grounding DINO on the image
-            # we can use driving expert model to detect bounding box or lane segmentation
-            inputs = processor(images=image, text=text, return_tensors="pt").to(device)
-            with torch.no_grad():
-                outputs = grounding_model(**inputs)
+    with open(scene_id_file, "r") as f:
+        scene_id_split = json.load(f)
 
-            results = processor.post_process_grounded_object_detection(
-                outputs,
-                inputs.input_ids,
-                box_threshold=0.25,
-                text_threshold=0.25,
-                target_sizes=[image.size[::-1]]
-            )
-
-            input_boxes = results[0]["boxes"]
-            OBJECTS = results[0]["labels"]
-
-        image_predictor.set_image(np.array(image.convert("RGB")))
-    
-        masks, scores, logits = image_predictor.predict(
-            point_coords=None,
-            point_labels=None,
-            box=input_boxes,
-            multimask_output=False,
-        )
-        # convert the mask shape to (n, H, W)
-        if masks.ndim == 2:
-            masks = masks[None]
-            scores = scores[None]
-            logits = logits[None]
-        elif masks.ndim == 4:
-            masks = masks.squeeze(1)
-
-        # If you are using point prompts, we uniformly sample positive points based on the mask
-        if mask_dict.promote_type == "mask":
-            mask_dict.add_new_frame_annotation(mask_list=torch.tensor(masks).to(device), box_list=torch.tensor(input_boxes), label_list=OBJECTS)
-        else:
-            raise NotImplementedError("SAM 2 video predictor only support mask prompts")
-
-        objects_count = mask_dict.update_masks(tracking_annotation_dict=sam2_masks, iou_threshold=0.8, objects_count=objects_count)
-        print("objects_count", objects_count)
-        video_predictor.reset_state(inference_state)
-        if len(mask_dict.labels) == 0:
-            print("No object detected in the frame, skip the frame {}".format(start_frame_idx))
-            continue
-        video_predictor.reset_state(inference_state)
-
-        for object_id, object_info in mask_dict.labels.items():
-            frame_idx, out_obj_ids, out_mask_logits = video_predictor.add_new_mask(
-                    inference_state,
-                    start_frame_idx,
-                    object_id,
-                    object_info.mask,
-                )
+    for i in scene_id_split['long_tail']:
+        if i != 217: continue
         
-        video_segments = {}  # output the following {step} frames tracking masks
-        for out_frame_idx, out_obj_ids, out_mask_logits in video_predictor.propagate_in_video(inference_state, max_frame_num_to_track=step, start_frame_idx=start_frame_idx):
-            frame_masks = MaskDictionaryModel()
+        samples, video_dir, output_dir, output_video_path, \
+        mask_data_dir, json_data_dir, result_dir, frame_names  = generate_realtime_data(scene_id=i)
+
+        # init video predictor state
+        inference_state = video_predictor.init_state(video_path=video_dir, offload_video_to_cpu=True, async_loading_frames=True)
+        step = 4 # the step to sample frames for Grounding DINO predictor
+
+        sam2_masks = MaskDictionaryModel()
+        PROMPT_TYPE_FOR_VIDEO = "mask" # box, mask or point
+        objects_count = 0
+        use_ground_truth = False
+
+        print(f"Frame num: {len(frame_names)}")
+        for start_frame_idx in range(0, len(frame_names), step):
+            print("start_frame_idx", start_frame_idx)
+            # continue
+            img_path = os.path.join(video_dir, frame_names[start_frame_idx])
+            image = Image.open(img_path)
+            image_base_name = frame_names[start_frame_idx].split(".")[0]
+            mask_dict = MaskDictionaryModel(promote_type = PROMPT_TYPE_FOR_VIDEO, mask_name = f"mask_{image_base_name}.npy")
+
+            if use_ground_truth:
+                instances = samples[start_frame_idx]['sample_annotations']
+                remove_id = []
+                OBJECTS = [item['category_name'].split("/")[-1] for instance_id, item in instances.items() if instance_id not in remove_id]
+                input_boxes = [item['bounding_box'] for instance_id, item in instances.items() if instance_id not in remove_id]
+                input_boxes = torch.tensor(input_boxes)
+            else:
+                # run Grounding DINO on the image
+                # we can use driving expert model to detect bounding box or lane segmentation
+                input_boxes, OBJECTS = [], [] 
+                for text in ['car.']:
+                    inputs = processor(images=image, text=text, return_tensors="pt").to(device)
+                    with torch.no_grad():
+                        outputs = grounding_model(**inputs)
+
+                    results = processor.post_process_grounded_object_detection(
+                        outputs,
+                        inputs.input_ids,
+                        box_threshold=0.25,
+                        text_threshold=0.25,
+                        target_sizes=[image.size[::-1]]
+                    )
+
+                    input_boxes.extend(results[0]["boxes"].cpu().numpy().tolist())
+                    OBJECTS.extend(results[0]["labels"])
+
+            image_predictor.set_image(np.array(image.convert("RGB")))
+
+            if len(input_boxes) == 0:
+                print("No object detected in the frame, skip the frame {}".format(start_frame_idx))
+                continue
+
+            masks, scores, logits = image_predictor.predict(
+                point_coords=None,
+                point_labels=None,
+                box=input_boxes,
+                multimask_output=False,
+            )
+            # convert the mask shape to (n, H, W)
+            if masks.ndim == 2:
+                masks = masks[None]
+                scores = scores[None]
+                logits = logits[None]
+            elif masks.ndim == 4:
+                masks = masks.squeeze(1)
+
+            # If you are using point prompts, we uniformly sample positive points based on the mask
+            if mask_dict.promote_type == "mask":
+                mask_dict.add_new_frame_annotation(mask_list=torch.tensor(masks).to(device), box_list=torch.tensor(input_boxes), label_list=OBJECTS)
+            else:
+                raise NotImplementedError("SAM 2 video predictor only support mask prompts")
+
+            objects_count = mask_dict.update_masks(tracking_annotation_dict=sam2_masks, iou_threshold=0.8, objects_count=objects_count)
+            print("objects_count", objects_count)
+            video_predictor.reset_state(inference_state)
+            if len(mask_dict.labels) == 0:
+                print("No object detected in the frame, skip the frame {}".format(start_frame_idx))
+                continue
+            video_predictor.reset_state(inference_state)
+
+            for object_id, object_info in mask_dict.labels.items():
+                frame_idx, out_obj_ids, out_mask_logits = video_predictor.add_new_mask(
+                        inference_state,
+                        start_frame_idx,
+                        object_id,
+                        object_info.mask,
+                    )
             
-            for i, out_obj_id in enumerate(out_obj_ids):
-                out_mask = (out_mask_logits[i] > 0.0) # .cpu().numpy()
-                object_info = ObjectInfo(instance_id = out_obj_id, mask = out_mask[0], class_name = mask_dict.get_target_class_name(out_obj_id))
-                object_info.update_box()
-                frame_masks.labels[out_obj_id] = object_info
-                image_base_name = frame_names[out_frame_idx].split(".")[0]
-                frame_masks.mask_name = f"mask_{image_base_name}.npy"
-                frame_masks.mask_height = out_mask.shape[-2]
-                frame_masks.mask_width = out_mask.shape[-1]
+            video_segments = {}  # output the following {step} frames tracking masks
+            for out_frame_idx, out_obj_ids, out_mask_logits in video_predictor.propagate_in_video(inference_state, max_frame_num_to_track=step, start_frame_idx=start_frame_idx):
+                frame_masks = MaskDictionaryModel()
+                
+                for i, out_obj_id in enumerate(out_obj_ids):
+                    out_mask = (out_mask_logits[i] > 0.0) # .cpu().numpy()
+                    object_info = ObjectInfo(instance_id = out_obj_id, mask = out_mask[0], class_name = mask_dict.get_target_class_name(out_obj_id))
+                    object_info.update_box()
+                    frame_masks.labels[out_obj_id] = object_info
+                    image_base_name = frame_names[out_frame_idx].split(".")[0]
+                    frame_masks.mask_name = f"mask_{image_base_name}.npy"
+                    frame_masks.mask_height = out_mask.shape[-2]
+                    frame_masks.mask_width = out_mask.shape[-1]
 
-            video_segments[out_frame_idx] = frame_masks
-            sam2_masks = copy.deepcopy(frame_masks)
-
-
-        for frame_idx, frame_masks_info in video_segments.items():
-            mask = frame_masks_info.labels
-            mask_img = torch.zeros(frame_masks_info.mask_height, frame_masks_info.mask_width)
-            for obj_id, obj_info in mask.items():
-                mask_img[obj_info.mask == True] = obj_id
-
-            mask_img = mask_img.numpy().astype(np.uint16)
-            np.save(os.path.join(mask_data_dir, frame_masks_info.mask_name), mask_img)
-
-            json_data = frame_masks_info.to_dict()
-            json_data_path = os.path.join(json_data_dir, frame_masks_info.mask_name.replace(".npy", ".json"))
-            with open(json_data_path, "w") as f:
-                json.dump(json_data, f)
-
-    ego_vel, ego_accel, ego_angle = [], [], []
-    for frame_idx, item in samples.items():
-        ego_vel.append(item['ego_vehicle_velocity'])
-        ego_accel.append(item['ego_vehicle_accelerate'])
-        ego_angle.append(item['ego_vehicle_heading'])
-
-    CommonUtils.draw_masks_and_box_with_supervision(video_dir, mask_data_dir, json_data_dir, result_dir)
+                video_segments[out_frame_idx] = frame_masks
+                sam2_masks = copy.deepcopy(frame_masks)
 
 
-    run_agent(ego_vel, ego_accel, ego_angle, video_dir, result_dir)
+            for frame_idx, frame_masks_info in video_segments.items():
+                mask = frame_masks_info.labels
+                mask_img = torch.zeros(frame_masks_info.mask_height, frame_masks_info.mask_width)
+                for obj_id, obj_info in mask.items():
+                    mask_img[obj_info.mask == True] = obj_id
 
-    # create_video_from_images(result_dir, output_video_path, frame_rate=15)
+                mask_img = mask_img.numpy().astype(np.uint16)
+                np.save(os.path.join(mask_data_dir, frame_masks_info.mask_name), mask_img)
+
+                json_data = frame_masks_info.to_dict()
+                json_data_path = os.path.join(json_data_dir, frame_masks_info.mask_name.replace(".npy", ".json"))
+                with open(json_data_path, "w") as f:
+                    json.dump(json_data, f)
+
+
+
+        CommonUtils.draw_masks_and_box_with_supervision(video_dir, mask_data_dir, json_data_dir, result_dir)
+        run_agent(samples, video_dir, result_dir)
+
+        break
+        # create_video_from_images(result_dir, output_video_path, frame_rate=15)
     
 
 

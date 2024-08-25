@@ -1,0 +1,45 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+- **Objects Identified:**
+  - **Car 8 and Car 9:** Located on the left side of the road, near the building.
+  - **Car 10, Car 11, and Car 12:** Located further down the road, in the left lane.
+
+#### Traffic Light:
+- No traffic lights are visible in the frames.
+
+#### Ego Analysis:
+- **Speed:** The ego vehicle has been accelerating over the last 4 seconds, reaching a speed of 3.96 m/s.
+- **Turn Angle:** The ego vehicle has been turning left, with the turn angle increasing from 119.7 degrees to 174.0 degrees.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Behavior:** TURN LEFT
+- **Speed:** DECELERATION TO ZERO
+
+#### Summary:
+- The ego vehicle needs to perform a 3-point turn to the left as per the navigation command. The vehicle should decelerate to a stop, then execute the turn maneuver carefully, considering the nearby parked cars (Car 8 and Car 9) and the vehicles further down the road (Car 10, Car 11, and Car 12).
+
+### MPC Signals:
+
+```json
+{
+  "Q": 3,
+  "R": 0.1,
+  "Q_h": 4,
+  "desired_speed": 1,
+  "desired_headway": 2,
+  "desired_yaw_rate": 2.5,
+  "yaw_rate_weight": 3
+}
+```
+
+### Explanation:
+- **Q (Speed Maintenance):** Set to 1 to maintain a balance between speed and control.
+- **R (Control Effort):** Set to 3 for smoother control during the turn.
+- **Q_h (Headway Maintenance):** Set to 4 to ensure a safe distance from nearby objects.
+- **Desired Speed:** Set to 0 to decelerate to a stop before executing the turn.
+- **Desired Headway:** Set to 2 seconds to maintain a safe distance from other vehicles.
+- **Desired Yaw Rate:** Set to 2.5 rad/s for a left turn.
+- **Yaw Rate Weight:** Set to 3 for smoother control during the turn.

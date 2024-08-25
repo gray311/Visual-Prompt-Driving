@@ -1,0 +1,54 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+- **Object IDs and Lanes:**
+  - **ID 1 (Car)**: Parked on the right side of the road.
+  - **ID 3 (Car)**: Parked on the right side of the road.
+  - **ID 4 (Car)**: Parked on the right side of the road.
+  - **ID 5 (Car)**: Parked on the left side of the road.
+
+#### Traffic Light:
+- No traffic lights are visible in the frames.
+
+#### Ego Analysis:
+- **Speed**: Gradually increasing from 0.29 m/s to 2.22 m/s.
+- **Acceleration**: Increasing from 0.49 m/s² to 1.53 m/s².
+- **Turn Angle**: Increasing from 0.19 degrees to 44.96 degrees, indicating a left turn.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Action**: Perform a 3-point turn to the left.
+
+#### Speed:
+- **Adjustment**: Deceleration to zero, then controlled acceleration and deceleration during the turn.
+
+#### Summary:
+- **Overall Plan**: 
+  1. Decelerate to a stop.
+  2. Turn the steering wheel fully to the left and move forward.
+  3. Reverse while turning the steering wheel to the right.
+  4. Move forward again while turning the steering wheel to the left to complete the turn.
+
+### MPC Signals:
+
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 1.5,
+  "desired_headway": 1.5,
+  "desired_yaw_rate": 5,
+  "yaw_rate_weight": 1
+}
+```
+
+### Explanation:
+- **Q (Speed Maintenance)**: Fixed at 1 to maintain a balance between speed and control.
+- **R (Control Effort)**: Set to 3 for smoother control during the 3-point turn.
+- **Q_h (Headway Maintenance)**: Set to 3 to ensure a safe distance from parked cars.
+- **Desired Speed**: Set to 0 initially to stop the vehicle before starting the turn.
+- **Desired Headway**: Set to 1.5 seconds to maintain a safe distance.
+- **Desired Yaw Rate**: Set to 3 rad/s for the left turn.
+- **Yaw Rate Weight**: Set to 3 for smoother control during the turn.

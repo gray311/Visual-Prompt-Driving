@@ -61,7 +61,7 @@ class GPTEvaluator:
                     model=self.model,
                     messages=message,
                     temperature = self.temperature,
-                    max_tokens=1024,
+                    max_tokens=2000,
                 )
                 
                 if response_ == None:

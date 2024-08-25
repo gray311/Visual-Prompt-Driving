@@ -1,0 +1,10 @@
+Input:
+
+1. Ego states: 
+  - Speed (m/s): [6.48, 6.77, 6.91, 7.06]
+  - Acceleration (m/s²): [0.61, 0.48, 0.59, 0.54]
+  - Turn Angle (degree): [18.17, 14.58, 9.05, 3.6]
+
+2. Front view frames from the past 4 seconds and corresponding marked frames.
+
+Output:

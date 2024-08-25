@@ -6,6 +6,7 @@ from nuscenes.utils.data_classes import Box, Quaternion
 from nuscenes.eval.common.utils import quaternion_yaw, Quaternion
 from nuscenes.utils.geometry_utils import box_in_image
 from .utils import relative_heading_angle, get_rotation_matrix
+from .traj_api import NuScenesTraj
 import numpy as np
 DEFAULT_SENSOR_CHANNEL = 'CAM_FRONT'
 
@@ -57,6 +58,13 @@ class NuscenesLoader:
         self.dataroot = dataroot
         self.nusc = NuScenes(version=version, dataroot=dataroot, verbose=True)
         self.nusc_can = NuScenesCanBus(dataroot=dataroot)
+        self.traj_api = NuScenesTraj(
+            self.nusc,
+            predict_steps=12,
+            planning_steps=6,
+            past_steps=4,
+            fut_steps=4,
+        )
         self.frequency = frequency
 
     def get_scene_description(self, scene_id):
@@ -123,6 +131,8 @@ class NuscenesLoader:
         # each sample is a frame in the scene consisting of a set of annotations in different sensors
 
         sample = self.nusc.get('sample', sample_token)
+        sdc_fut_traj_all, sdc_fut_traj_valid_mask_all = self.traj_api.get_sdc_traj_label(sample_token)
+
         can_bus = self._get_can_bus_info(sample)
         ego_pose_token = self.nusc.get('sample_data', sample['data'][DEFAULT_SENSOR_CHANNEL])['ego_pose_token']
         ego_pose = self.nusc.get('ego_pose', ego_pose_token)
@@ -139,14 +149,16 @@ class NuscenesLoader:
         )
         # print(location,heading)
         sample_description = {
-            'ego_vehicle_location': location,
-            'ego_vehicle_heading': heading,
+            "ego_vehicle_location": location,
+            "ego_vehicle_heading": heading,
             "ego_vehicle_velocity": can_bus[-3],
             "ego_vehicle_accelerate": can_bus[7],
             "ego_vehicle_yawangle": can_bus[-1],
-            'timestamp': timestamp,
-            'filepath': filepath,
-            'sample_annotations': object_descriptions
+            "ego_future_trajectory": sdc_fut_traj_all,
+            "ego_future_trajectory_mask": sdc_fut_traj_valid_mask_all,
+            "timestamp": timestamp,
+            "filepath": filepath,
+            "sample_annotations": object_descriptions
         }
         next_sample_token = sample['next']
         return sample_description, next_sample_token
@@ -282,6 +294,7 @@ class NuscenesLoader:
         while True:
             descriptions, next_sample_token = self.get_sample_description(sample_token)
             if index % self.frequency == 0:
+                descriptions.update(sample_token=sample_token)
                 sample_descriptions[index] = descriptions
             index += 1
             if next_sample_token == '':
@@ -296,7 +309,7 @@ class NuscenesLoader:
 
 if __name__ == "__main__":
     ## Test the function
-    loader = NuscenesLoader(version="v1.0-mini", dataroot="/data/yingzi_ma/Visual-Prompt-Driving/workspace/nuscenes")
+    loader = NuscenesLoader(version="v1.0-trainval", dataroot="/data/yingzi_ma/Visual-Prompt-Driving/workspace/nuscenes")
     metadata = loader.load(0)
-    print(metadata)
+    # print(metadata)
     

@@ -1,0 +1,47 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+- **Object 1 (Car)**: Positioned on the right side, stationary.
+- **Object 2 (Car)**: Positioned in the middle lane, stationary.
+- **Object 3 (Car)**: Positioned on the right side, stationary.
+- **Object 4 (Car)**: Positioned on the right side, stationary.
+
+#### Traffic Light:
+- No traffic light is visible in the frames.
+
+#### Ego Analysis:
+- **Speed**: The ego vehicle has been accelerating slightly from 0.0 m/s to 0.29 m/s over the past 4 seconds.
+- **Turn Angle**: The ego vehicle has a slight turn angle of 0.19 degrees to the right.
+- **Acceleration**: The ego vehicle has been accelerating at a consistent rate of approximately 0.49 m/s².
+
+### High-Level Plan:
+
+#### Behavior:
+- **Behavior**: TURN LEFT
+- **Speed**: DECELERATION TO ZERO (to prepare for the 3-point turn)
+
+#### Summary:
+- The ego vehicle will decelerate to a stop and initiate a left 3-point turn. Given the stationary cars on the right side, the ego vehicle has enough space to execute the maneuver safely.
+
+### MPC Signals:
+
+```json
+{
+  "Q": 3,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 1,
+  "desired_headway": 0,
+  "desired_yaw_rate": 4.0,
+  "yaw_rate_weight": 3
+}
+```
+
+### Explanation:
+- **Q (Speed Maintenance)**: Fixed at 1 to maintain a balance between speed and control.
+- **R (Control Effort)**: Set to 3 for moderate control effort, ensuring smooth maneuvering.
+- **Q_h (Headway Maintenance)**: Set to 3 to maintain a safe distance from stationary objects.
+- **Desired Speed**: 0.0 m/s to stop the vehicle before initiating the turn.
+- **Desired Headway**: 2.0 seconds to ensure a safe distance from any potential moving objects.
+- **Desired Yaw Rate**: 3.0 rad/s to execute the left turn.
+- **Yaw Rate Weight**: Set to 3 for moderate control over the turning maneuver.
