@@ -1,0 +1,50 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+- **Object IDs and Lanes:**
+  - **ID 6 (Car):** In the left lane, moving forward.
+  - **ID 7 (Car):** Parked in the right lane.
+  - **ID 9 (Bus):** In the left lane, moving forward.
+  - **ID 10 (Car):** In the left lane, moving forward.
+  - **ID 15 (Lane Line):** Marking the left lane.
+  - **ID 17 (Lane Line):** Marking the right lane.
+
+#### Traffic Light:
+- No traffic light is visible in the frames.
+
+#### Ego Analysis:
+- **Speed:** Decreasing over the past 4 seconds (from 5.9 m/s to 1.78 m/s).
+- **Acceleration:** Decreasing (from 2.79 m/s² to 0.12 m/s²).
+- **Turn Angle:** Slightly negative, indicating a slight left turn.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Action:** CHANGE LANE TO RIGHT
+- **Speed Adjustment:** ACCELERATION
+
+#### Summary:
+- The right lane is clear except for a parked car (ID 7). The ego vehicle should change to the right lane as per the navigation command. The ego vehicle should accelerate slightly to match the traffic flow.
+
+### MPC Signals:
+
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 3.0,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": -0.1,
+  "yaw_rate_weight": 3
+}
+```
+
+### Explanation:
+- **Q (Speed Maintenance):** Set to 5 to ensure the vehicle reaches the desired speed quickly.
+- **R (Control Effort):** Set to 0.1 for a smooth lane change.
+- **Q_h (Headway Maintenance):** Set to 3 to maintain a safe distance from other vehicles.
+- **Desired Speed:** Set to 3.0 m/s to match the traffic flow.
+- **Desired Headway:** Set to 2.0 seconds for safety.
+- **Desired Yaw Rate:** Set to -0.1 for a slight right turn.
+- **Yaw Rate Weight:** Set to 3 for smooth control during the lane change.

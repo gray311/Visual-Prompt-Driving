@@ -1,0 +1,49 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+- **Key Objects:**
+  - **Vehicle (ID: 1)**: Parked on the right side of the road.
+  - **Pedestrian (ID: 2)**: Walking on the sidewalk on the left side.
+  - **Vehicle (ID: 3)**: Parked on the right side of the road, further ahead.
+  - **Vehicle (ID: 4)**: Parked on the left side of the road, further ahead.
+  - **Pedestrian (ID: 5)**: Walking on the sidewalk on the right side.
+
+#### Traffic Light:
+- No traffic light is visible in the frames.
+
+#### Ego Analysis:
+- **Speed**: The ego vehicle is decelerating over the last 4 seconds (from 5.33 m/s to 1.47 m/s).
+- **Acceleration**: The ego vehicle has been experiencing positive acceleration, indicating a slow deceleration.
+- **Turn Angle**: The ego vehicle is slightly turning to the right (from 0.27° to 0.5°).
+
+### High-Level Plan:
+
+#### Behavior:
+- **Planned Action**: MOVE FORWARD
+- **Speed Adjustment**: ACCELERATION
+
+#### Summary:
+- The ego vehicle should continue moving forward while accelerating to reach a desired speed. There are no immediate obstacles in the lane, but the vehicle should be cautious of parked vehicles and pedestrians on both sides of the road.
+
+### MPC Signals:
+
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 5.0,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": 0,
+  "yaw_rate_weight": 3
+}
+```
+
+### Explanation:
+- **Q (Speed Maintenance)**: Set to 5 to prioritize maintaining a consistent speed.
+- **R (Control Effort)**: Set to 0.1 to ensure smooth control adjustments.
+- **Q_h (Headway Maintenance)**: Set to 3 to maintain a safe following distance.
+- **Desired Speed**: Set to 5.0 m/s to match the initial speed before deceleration.
+- **Desired Headway**: Set to 2.0 seconds to ensure a safe distance from any potential moving vehicles.
+- **Desired Yaw Rate**: Set to 0 as the vehicle should continue straight.
+- **Yaw Rate Weight**: Set to 3 to ensure smooth directional control.

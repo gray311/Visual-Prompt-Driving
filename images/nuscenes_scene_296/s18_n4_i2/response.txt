@@ -1,0 +1,45 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+- **Object ID 3 (Car)**: Parked on the left side of the road, not in the ego lane.
+- **Object ID 2 (Car)**: Moving forward in the same lane as the ego vehicle, approximately 20 meters ahead.
+- **Object ID 5 (Car)**: Moving forward in the same lane as the ego vehicle, approximately 25 meters ahead.
+- **Object ID 6 and 7 (Lane Lines)**: Clearly marked lane lines indicating the boundaries of the ego lane.
+
+#### Traffic Light:
+- No traffic lights are visible in the provided frames.
+
+#### Ego Analysis:
+- **Speed**: The ego vehicle's speed has been increasing steadily from 7.03 m/s to 7.94 m/s over the past 4 seconds.
+- **Acceleration**: The acceleration has been positive, indicating a gradual increase in speed.
+- **Turn Angle**: The turn angle has been increasing, suggesting a slight leftward adjustment in the vehicle's orientation.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Behavior**: MOVE FORWARD
+- **Speed**: CONSTANT SPEED
+
+#### Summary:
+- The ego vehicle should continue moving forward while maintaining a constant speed. The parked car (Object ID 3) on the left side of the road does not pose a threat. The moving cars (Object IDs 2 and 5) ahead are at a safe distance, so no immediate deceleration is required.
+
+### MPC Signals:
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 8.0,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": 0.0,
+  "yaw_rate_weight": 3
+}
+```
+
+- **Q (Speed Maintenance)**: Set to 5 to maintain the desired speed.
+- **R (Control Effort)**: Set to 0.1 for smooth control.
+- **Q_h (Headway Maintenance)**: Set to 3 to ensure a safe following distance.
+- **Desired Speed**: Set to 8.0 m/s, slightly higher than the current speed to maintain a constant speed.
+- **Desired Headway**: Set to 2.0 seconds to keep a safe distance from the vehicles ahead.
+- **Desired Yaw Rate**: Set to 0.0 rad/s as the vehicle is moving straight.
+- **Yaw Rate Weight**: Set to 3 for smooth control.

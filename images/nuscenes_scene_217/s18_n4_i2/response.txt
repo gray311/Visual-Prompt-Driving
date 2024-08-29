@@ -1,54 +1,49 @@
 ### Grounded Reasoning:
 
 #### Object Analysis:
-1. **Object IDs and Lanes:**
-   - **Car (ID: 3):** In the same lane as the ego vehicle, directly ahead.
-   - **Car (ID: 10):** In the same lane as the ego vehicle, directly ahead of Car ID 3.
-   - **Car (ID: 1):** In the same lane as the ego vehicle, directly ahead of Car ID 10.
-   - **Car (ID: 9):** In the adjacent lane to the left, moving parallel to the ego vehicle.
-
-2. **Movements Relative to Ego:**
-   - **Car (ID: 3):** Moving forward, maintaining a constant speed.
-   - **Car (ID: 10):** Moving forward, maintaining a constant speed.
-   - **Car (ID: 1):** Moving forward, maintaining a constant speed.
-   - **Car (ID: 9):** Moving forward, maintaining a constant speed.
+- **Object IDs and Lanes:**
+  - **ID 3 (Orange Car):** In the same lane as the ego vehicle, approximately 8-10 meters ahead.
+  - **ID 11 (Blue Car):** In the same lane as the ego vehicle, behind the orange car.
+  - **ID 14 (Blue Car):** In the adjacent lane to the left, moving parallel to the ego vehicle.
+  - **ID 13 (Blue Car):** In the adjacent lane to the left, moving parallel to the ego vehicle.
+  - **ID 16 (Lane Line):** Lane markings indicating the current lane and adjacent lanes.
 
 #### Traffic Light:
-- No traffic lights are visible in the frames.
+- No traffic lights are visible in the provided frames.
 
 #### Ego Analysis:
-- **Speed:** Decreasing from 4.7 m/s to 2.42 m/s over the last 4 seconds.
-- **Acceleration:** Increasing from 0.89 m/s² to 1.27 m/s².
-- **Turn Angle:** Slightly decreasing from 6.16 degrees to -0.1 degrees, indicating a slight rightward adjustment.
+- **Speed:** The ego vehicle has been decelerating over the past 4 seconds, with speeds reducing from 4.7 m/s to 2.42 m/s.
+- **Acceleration:** The ego vehicle has been experiencing positive acceleration, indicating a gradual increase in speed.
+- **Turn Angle:** The ego vehicle has been slightly turning left, but the turn angle is minimal, indicating a mostly straight path.
 
 ### High-Level Plan:
 
 #### Behavior:
 - **Planned Action:** MOVE FORWARD
-- **Speed Adjustment:** CONSTANT SPEED
+- **Speed Adjustment:** ACCELERATION
 
 #### Summary:
-- The ego vehicle should continue moving forward, maintaining a constant speed. There are no immediate obstacles or traffic lights requiring a stop. The vehicles ahead are moving at a constant speed, and the lane is clear.
+- The ego vehicle should continue moving forward while gradually accelerating to maintain a safe distance from the vehicle ahead (ID 3). The current lane is clear, and there are no immediate obstacles or traffic lights requiring a stop. The ego vehicle should maintain awareness of the surrounding vehicles, particularly those in the adjacent lane.
 
-### MPC Control Signals:
+### MPC Signals:
 
 ```json
 {
   "Q": 5,
   "R": 0.1,
   "Q_h": 3,
-  "desired_speed": 2.42,
-  "desired_headway": 2,
+  "desired_speed": 3.5,
+  "desired_headway": 2.0,
   "desired_yaw_rate": 0,
-  "yaw_rate_weight": 3
+  "yaw_rate_weight": 2
 }
 ```
 
 ### Explanation:
-- **Q (Speed Maintenance):** Set to 5 to maintain the desired speed.
-- **R (Control Effort):** Set to 0.1 for smooth control.
-- **Q_h (Headway Maintenance):** Set to 3 to maintain a safe following distance.
-- **Desired Speed:** Set to 2.42 m/s, the current speed of the ego vehicle.
-- **Desired Headway:** Set to 2 seconds to ensure a safe distance from the vehicle ahead.
+- **Q (Speed Maintenance):** Set to 5 to prioritize maintaining a steady speed as the vehicle accelerates.
+- **R (Control Effort):** Set to 0.1 for smooth control adjustments.
+- **Q_h (Headway Maintenance):** Set to 3 to ensure a safe following distance from the vehicle ahead.
+- **Desired Speed:** Set to 3.5 m/s to gradually increase speed while maintaining safety.
+- **Desired Headway:** Set to 2.0 seconds to ensure a safe distance from the vehicle ahead.
 - **Desired Yaw Rate:** Set to 0 as the vehicle is moving straight.
-- **Yaw Rate Weight:** Set to 3 for smooth control.
+- **Yaw Rate Weight:** Set to 2 for balanced control during straight driving.

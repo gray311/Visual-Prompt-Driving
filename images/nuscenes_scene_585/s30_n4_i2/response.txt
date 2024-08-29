@@ -1,0 +1,50 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+- **Key Objects Identified:**
+  - **ID 8 (car)**: Parked on the left side of the road.
+  - **ID 13 (car)**: Moving ahead in the same lane.
+  - **ID 14 (car)**: Parked on the right side of the road.
+  - **ID 15 (car)**: Moving ahead in the same lane.
+  - **ID 17 (car)**: Parked on the left side of the road.
+  - **ID 18 (car)**: Parked on the left side of the road.
+  - **ID 21 (car)**: Parked on the right side of the road.
+  - **ID 4 (truck)**: Moving ahead in the same lane.
+
+#### Traffic Light:
+- No traffic lights are visible in the provided frames.
+
+#### Ego Analysis:
+- **Speed**: The ego vehicle's speed has been decreasing over the last 4 seconds, indicating deceleration.
+- **Acceleration**: The ego vehicle's acceleration has been decreasing, indicating a gradual reduction in speed.
+- **Turn Angle**: The ego vehicle has been maintaining a slight left turn angle consistently.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Behavior**: MOVE FORWARD
+- **Speed**: ACCELERATION
+
+#### Summary:
+- The ego vehicle should continue moving forward while gradually accelerating to maintain a safe distance from the vehicles ahead. The road is clear of immediate obstacles within the 10-meter radius, but the ego vehicle should be cautious of parked cars on both sides and the moving vehicles ahead.
+
+### MPC Signals:
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 2.5,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": 0.0,
+  "yaw_rate_weight": 3
+}
+```
+
+- **Q (Speed Maintenance)**: 5 (Moderate importance to maintain desired speed)
+- **R (Control Effort)**: 0.1 (Low control effort for smoother acceleration)
+- **Q_h (Headway Maintenance)**: 3 (Moderate importance for safe following distance)
+- **Desired Speed**: 2.5 m/s (Target speed to achieve safe and smooth forward movement)
+- **Desired Headway**: 2.0 seconds (Safe following distance)
+- **Desired Yaw Rate**: 0.0 rad/s (No turning required, maintain straight path)
+- **Yaw Rate Weight**: 3 (Moderate weight for smooth control)

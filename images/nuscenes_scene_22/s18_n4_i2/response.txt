@@ -1,0 +1,46 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+1. **Object ID 2 (Bus)**:
+   - **Lane**: Right lane.
+   - **Movement**: The bus is stationary and partially blocking the right lane.
+   - **Impact**: The bus is an obstacle that needs to be avoided. The ego vehicle should consider changing lanes to the left to bypass the bus.
+
+#### Traffic Light:
+- No traffic lights are visible in the frames.
+
+#### Ego Analysis:
+- **Speed**: The ego vehicle's speed has been relatively constant, with a slight decrease from 9.16 m/s to 9.0 m/s.
+- **Acceleration**: The ego vehicle's acceleration has been decreasing, indicating a gradual deceleration.
+- **Turn Angle**: The turn angle has been relatively stable, indicating that the vehicle has been maintaining a straight path with minor adjustments.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Planned Action**: Change lane to the left to avoid the stationary bus.
+- **Speed Adjustment**: Deceleration to ensure a safe lane change and avoid collision with the bus.
+
+#### Summary:
+- The ego vehicle should change lanes to the left to bypass the stationary bus in the right lane. This maneuver should be done with caution, maintaining a safe speed and ensuring no other vehicles are in the left lane.
+
+### MPC Signals:
+
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 7.0,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": 0.1,
+  "yaw_rate_weight": 3
+}
+```
+
+- **Q (Speed Maintenance)**: Set to 5 to ensure the vehicle maintains a desired speed after the lane change.
+- **R (Control Effort)**: Set to 0.1 to allow for smooth control during the lane change.
+- **Q_h (Headway Maintenance)**: Set to 3 to maintain a safe following distance.
+- **Desired Speed**: Set to 7.0 m/s to decelerate slightly for a safe lane change.
+- **Desired Headway**: Set to 2.0 seconds to ensure a safe distance from the bus and any potential vehicles in the left lane.
+- **Desired Yaw Rate**: Set to 0.1 rad/s to facilitate a slight left turn for the lane change.
+- **Yaw Rate Weight**: Set to 3 to ensure smooth control during the lane change.

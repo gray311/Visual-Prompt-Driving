@@ -1,0 +1,47 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+- **Notable Object**: 
+  - **ID**: 1
+  - **Type**: Truck
+  - **Lane**: Left lane
+  - **Movement**: Stationary or moving very slowly
+
+#### Traffic Light:
+- No traffic lights are visible in the frames.
+
+#### Ego Analysis:
+- **Speed**: Decreasing from 5.37 m/s to 4.99 m/s over the last 4 seconds.
+- **Acceleration**: Fluctuating, with a general trend towards deceleration.
+- **Turn Angle**: Initially turning right (negative angle), then straightening out.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Planned Action**: MOVE FORWARD
+- **Speed Adjustment**: CONSTANT SPEED
+
+#### Summary:
+- The ego vehicle should continue moving forward while maintaining a constant speed. The truck in the left lane does not pose an immediate threat as it is stationary or moving very slowly. The road curves to the right, so the vehicle should maintain its lane and follow the curvature of the road.
+
+### MPC Signals:
+
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 5.0,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": -0.1,
+  "yaw_rate_weight": 3
+}
+```
+
+- **Q**: Set to 5 to prioritize maintaining the desired speed.
+- **R**: Set to 0.1 for smooth control.
+- **Q_h**: Set to 3 to maintain a safe following distance.
+- **Desired Speed**: 5.0 m/s to maintain a constant speed.
+- **Desired Headway**: 2.0 seconds for a safe following distance.
+- **Desired Yaw Rate**: -0.1 rad/s to follow the slight right curve.
+- **Yaw Rate Weight**: Set to 3 for smoother control.

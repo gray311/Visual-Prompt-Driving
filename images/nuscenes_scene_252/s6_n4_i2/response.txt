@@ -1,0 +1,43 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+1. **Bus (ID: 3)**
+   - Lane: Left lane.
+   - Movement: Stationary or moving very slowly.
+   - Proximity: Approximately 10 meters ahead.
+
+2. **Car (ID: 2)**
+   - Lane: Right lane.
+   - Movement: Moving forward, overtaking the bus.
+   - Proximity: Initially close to the bus, then moves ahead.
+
+#### Traffic Light:
+- No traffic lights are visible in the frames.
+
+#### Ego Analysis:
+- **Speed**: The ego vehicle's speed has varied slightly, with a slight decrease followed by a slight increase.
+- **Acceleration**: The ego vehicle has experienced minor accelerations and decelerations.
+- **Turn Angle**: The ego vehicle has made slight adjustments to the left and right, with a notable left turn angle of -5.7 degrees in the last second.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Behavior**: MOVE FORWARD
+- **Speed**: CONSTANT SPEED
+- **Summary**: The ego vehicle should continue moving forward, maintaining a constant speed. It should stay in its lane and be cautious of the bus and the car. The car is overtaking the bus, so the ego vehicle should maintain a safe distance and be prepared to slow down if necessary.
+
+### MPC Signals:
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 4.5,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": 0,
+  "yaw_rate_weight": 3
+}
+```
+
+### Summary:
+The ego vehicle should continue moving forward at a constant speed of 4.5 m/s, maintaining a safe headway of 2.0 seconds from the bus ahead. The vehicle should stay in its lane and be cautious of the car overtaking the bus. The yaw rate should be kept at 0 for straight movement, with a moderate emphasis on maintaining smooth control.

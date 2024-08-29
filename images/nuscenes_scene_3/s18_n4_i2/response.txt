@@ -1,0 +1,54 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+1. **Object IDs and Positions**:
+   - **ID 19 (Car)**: In the middle lane, moving slowly or stationary.
+   - **ID 29 (Car)**: Parked on the left side of the road.
+   - **ID 30 (Bus)**: Parked on the right side of the road.
+   - **ID 42 (Bus)**: Parked on the right side of the road.
+   - **ID 37 (Bus)**: Parked on the right side of the road.
+   - **ID 41 (Car)**: Parked on the right side of the road.
+
+2. **Lane Information**:
+   - **Lane Markings**: Double solid yellow lines in the middle, indicating no overtaking.
+   - **Pedestrian Crossing**: Visible crosswalk ahead.
+
+#### Traffic Light:
+- No traffic light visible in the frames.
+
+#### Ego Analysis:
+- **Speed**: Decreasing trend from 8.5 m/s to 6.53 m/s.
+- **Acceleration**: Positive acceleration, indicating the vehicle is trying to maintain or increase speed.
+- **Turn Angle**: Slight left turn indicated by the positive turn angle.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Action**: MOVE FORWARD
+- **Speed Adjustment**: CONSTANT SPEED
+
+#### Summary:
+- **Plan**: Continue moving forward, maintaining a constant speed. Be cautious of the parked vehicles on both sides and the pedestrian crossing. No need to change lanes or stop as there are no immediate obstacles in the lane ahead.
+
+### MPC Signals:
+
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 6.5,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": 0,
+  "yaw_rate_weight": 3
+}
+```
+
+### Explanation:
+- **Q (Speed Maintenance)**: Set to 5 to maintain a constant speed.
+- **R (Control Effort)**: Set to 0.1 for smooth control.
+- **Q_h (Headway Maintenance)**: Set to 3 to maintain a safe distance from the vehicle ahead.
+- **Desired Speed**: Set to 6.5 m/s to maintain the current speed.
+- **Desired Headway**: Set to 2.0 seconds for safe following distance.
+- **Desired Yaw Rate**: Set to 0 as the vehicle should continue straight.
+- **Yaw Rate Weight**: Set to 3 for smooth control.

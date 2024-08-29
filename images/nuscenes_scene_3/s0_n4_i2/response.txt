@@ -1,0 +1,51 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+- **Notable Objects within 10 meters:**
+  - **Object 1 (Car):** Stationary, right lane.
+  - **Object 5 (Bus):** Stationary, left lane.
+  - **Object 6 (Car):** Stationary, right lane.
+  - **Object 10 (Car):** Stationary, left lane.
+  - **Object 11 (Car):** Stationary, left lane.
+  - **Object 12 (Car):** Stationary, left lane.
+  - **Object 13 (Bus):** Stationary, left lane.
+  - **Object 14 (Car):** Stationary, left lane.
+
+#### Traffic Light:
+- No traffic lights are visible in the frames.
+
+#### Ego Analysis:
+- **Speed:** Increasing from 7.58 m/s to 8.44 m/s.
+- **Acceleration:** Minor fluctuations, indicating a stable speed increase.
+- **Turn Angle:** Slight increase, indicating a minor adjustment to the left.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Action:** MOVE FORWARD
+- **Speed Adjustment:** CONSTANT SPEED
+
+#### Summary:
+- The ego vehicle should continue moving forward along the road, maintaining a constant speed. There are stationary vehicles on both sides, but the lane ahead is clear. No immediate obstacles or traffic lights are present, so the vehicle can proceed without any significant changes in speed or direction.
+
+### MPC Signals:
+
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 8.5,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": 0,
+  "yaw_rate_weight": 3
+}
+```
+
+- **Q (Speed Maintenance):** 5 (Moderate importance to maintain the desired speed).
+- **R (Control Effort):** 0.1 (Low control effort for smooth driving).
+- **Q_h (Headway Maintenance):** 3 (Moderate importance for safe following distance).
+- **Desired Speed:** 8.5 m/s (Slightly above current speed to maintain forward motion).
+- **Desired Headway:** 2.0 seconds (Safe following distance).
+- **Desired Yaw Rate:** 0 rad/s (No turning required).
+- **Yaw Rate Weight:** 3 (Moderate weight for smooth control).

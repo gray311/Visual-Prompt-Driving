@@ -1,0 +1,1 @@
+{"mask_name": "mask_000039.npy", "mask_height": 900, "mask_width": 1600, "promote_type": "mask", "labels": {"23": {"instance_id": 23, "class_name": "car", "x1": 468, "y1": 437, "x2": 543, "y2": 491, "logit": 0.0}}}

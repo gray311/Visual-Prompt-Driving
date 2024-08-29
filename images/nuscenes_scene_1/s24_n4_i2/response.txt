@@ -1,0 +1,48 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+1. **Object IDs and Lanes:**
+   - **ID 8 (Car):** Positioned in the right lane, moving forward.
+   - **ID 9 (Bus):** Positioned in the left lane, moving forward.
+   - **ID 22 (Car):** Positioned in the right lane, moving forward.
+   - **ID 25 (Car):** Positioned in the right lane, moving forward.
+   - **ID 26 (Bus):** Positioned in the left lane, moving forward.
+
+2. **Traffic Light:**
+   - No traffic light is visible in the frames.
+
+3. **Ego Analysis:**
+   - **Speed:** Increasing from 3.85 m/s to 6.4 m/s.
+   - **Acceleration:** Decreasing from 1.04 m/s² to 0.87 m/s².
+   - **Turn Angle:** Slightly increasing left turn angle from -11.05° to -12.11°.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Action:** Change lane to the right.
+- **Speed Adjustment:** Deceleration to ensure a safe lane change.
+
+#### Summary:
+- The right lane is clear for a lane change. The ego vehicle will initiate a lane change to the right while decelerating slightly to ensure a smooth and safe maneuver.
+
+### MPC Control Signals:
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 5.0,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": -0.1,
+  "yaw_rate_weight": 3
+}
+```
+
+### Explanation:
+- **Q (Speed Maintenance):** Set to 5 to maintain a desired speed during the lane change.
+- **R (Control Effort):** Set to 0.1 for smoother control during the lane change.
+- **Q_h (Headway Maintenance):** Set to 3 to maintain a safe following distance.
+- **Desired Speed:** Set to 5.0 m/s to decelerate slightly for a safe lane change.
+- **Desired Headway:** Set to 2.0 seconds to ensure a safe distance from the vehicle ahead.
+- **Desired Yaw Rate:** Set to -0.1 rad/s for a slight right turn.
+- **Yaw Rate Weight:** Set to 3 for smoother control during the lane change.

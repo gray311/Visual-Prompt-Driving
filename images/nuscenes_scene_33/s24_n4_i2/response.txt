@@ -1,0 +1,44 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+- **Object ID 4 (Car)**:
+  - **Lane**: The car is in the same lane as the ego vehicle.
+  - **Movement**: The car is stationary or moving very slowly on the shoulder of the road.
+
+#### Traffic Light:
+- No traffic light is visible in the frames.
+
+#### Ego Analysis:
+- **Speed**: The ego vehicle's speed has been decreasing over the last 4 seconds from 7.1 m/s to 5.37 m/s.
+- **Acceleration**: The acceleration has been positive but decreasing, indicating a gradual deceleration.
+- **Turn Angle**: The turn angle has varied, indicating slight steering adjustments, with a notable left turn in the last second.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Behavior**: MOVE FORWARD
+- **Speed**: DECELERATION
+- **Summary**: The ego vehicle should continue moving forward while decelerating slightly to maintain a safe distance from the stationary car on the shoulder. The vehicle should stay in its lane and be prepared to steer slightly left to avoid the stationary car if necessary.
+
+### MPC Signals:
+
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 5.0,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": 0.1,
+  "yaw_rate_weight": 3
+}
+```
+
+### Explanation:
+- **Q (Speed Maintenance)**: Set to 5 to prioritize maintaining a safe speed while decelerating.
+- **R (Control Effort)**: Set to 0.1 for smooth control adjustments.
+- **Q_h (Headway Maintenance)**: Set to 3 to ensure a safe following distance.
+- **Desired Speed**: Set to 5.0 m/s to continue decelerating safely.
+- **Desired Headway**: Set to 2.0 seconds to maintain a safe distance from the stationary car.
+- **Desired Yaw Rate**: Set to 0.1 rad/s to allow for slight left steering adjustments.
+- **Yaw Rate Weight**: Set to 3 for balanced control during slight steering adjustments.

@@ -1,46 +1,49 @@
 ### Grounded Reasoning:
 
 #### Object Analysis:
-- **Object 2 (Car)**: 
-  - Lane: Same lane as ego vehicle.
-  - Movement: Stationary or moving very slowly.
-  - Distance: Approximately 5 meters ahead.
-- **Object 4 (Car)**:
-  - Lane: Same lane as ego vehicle.
-  - Movement: Moving slowly.
-  - Distance: Approximately 10 meters ahead.
-- **Object 5, 6 (Cars)**:
-  - Lane: Same lane as ego vehicle.
-  - Movement: Moving slowly.
-  - Distance: Approximately 15 meters ahead.
+1. **Object 2 (Car)**:
+   - Lane: Left lane, partially on the shoulder.
+   - Movement: Stationary or moving very slowly.
+   - Impact: Potential obstacle if ego vehicle continues straight.
+
+2. **Object 4 (Car)**:
+   - Lane: Right lane.
+   - Movement: Moving forward.
+   - Impact: No immediate threat but needs to be monitored.
+
+3. **Object 6 (Car)**:
+   - Lane: Right lane.
+   - Movement: Moving forward.
+   - Impact: No immediate threat but needs to be monitored.
 
 #### Traffic Light:
-- No traffic lights are visible in the frames.
+- No traffic lights visible in the frames.
 
 #### Ego Analysis:
-- **Speed**: Increasing from 0.01 m/s to 2.43 m/s.
-- **Acceleration**: Decreasing from 1.42 m/s² to 0.55 m/s².
-- **Turn Angle**: Increasingly negative, indicating a slight right turn.
+- Speed: Increasing from 0.01 m/s to 2.43 m/s.
+- Acceleration: Decreasing from 1.42 m/s² to 0.55 m/s².
+- Turn Angle: Increasing right turn angle from 0.0° to -11.17°.
+- Behavior: Ego vehicle is accelerating and turning slightly to the right.
 
 ### High-Level Plan:
 
 #### Behavior:
 - **Behavior**: MOVE FORWARD
-- **Speed**: DECELERATION
-- **Summary**: The ego vehicle should continue moving forward but decelerate to avoid collision with the stationary or slow-moving car (Object 2) ahead. Given the navigation command to keep forward along the road, no lane change is necessary at this moment.
+- **Speed**: CONSTANT SPEED
+- **Summary**: Continue moving forward while maintaining a constant speed. Monitor the stationary car on the left and ensure to stay in the right lane to avoid collision.
 
-### MPC Control Signals:
+### MPC Signals:
 ```json
 {
   "Q": 5,
-  "R": 0.2,
+  "R": 0.1,
   "Q_h": 3,
-  "desired_speed": 5.0,
+  "desired_speed": 2.5,
   "desired_headway": 2.0,
-  "desired_yaw_rate": -0.5,
+  "desired_yaw_rate": -0.1,
   "yaw_rate_weight": 3
 }
 ```
 
 ### Summary:
-The ego vehicle should decelerate to maintain a safe distance from the car ahead while continuing to move forward. The slight right turn should be maintained to stay within the lane. The MPC control signals are set to ensure smooth deceleration and safe headway.
+The ego vehicle should continue moving forward at a constant speed while keeping an eye on the stationary car on the left. The vehicle should stay in the right lane to avoid any potential collision. The MPC parameters are set to maintain a smooth and safe driving experience.

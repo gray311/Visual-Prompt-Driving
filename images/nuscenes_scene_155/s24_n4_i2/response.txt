@@ -1,0 +1,60 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+- **Object IDs and Lanes:**
+  - **Object 28 (Car):** Parked on the right side of the road.
+  - **Object 31 (Car):** Parked on the right side of the road.
+  - **Object 38 (Car):** Parked on the left side of the road.
+  - **Object 39 (Car):** Parked on the left side of the road.
+  - **Object 42 (Laneline):** Center lane marking.
+  - **Object 40 (Laneline):** Right lane marking.
+  - **Object 49 (Car):** Parked on the left side of the road.
+  - **Object 48 (Car):** Parked on the left side of the road.
+  - **Object 44 (Car):** Parked on the left side of the road.
+  - **Object 45 (Car):** Parked on the left side of the road.
+  - **Object 47 (Car):** Parked on the left side of the road.
+  - **Object 43 (Car):** Parked on the left side of the road.
+  - **Object 53 (Laneline):** Center lane marking.
+  - **Object 54 (Laneline):** Center lane marking.
+  - **Object 52 (Laneline):** Center lane marking.
+  - **Object 55 (Laneline):** Right lane marking.
+  - **Object 51 (Laneline):** Right lane marking.
+
+#### Traffic Light:
+- No traffic lights are visible in the frames.
+
+#### Ego Analysis:
+- **Speed:** The ego vehicle's speed has been relatively constant, with a slight increase in the last second.
+- **Acceleration:** The ego vehicle has been decelerating slightly over the past 4 seconds.
+- **Turn Angle:** The ego vehicle has been turning to the left, with the turn angle increasing over the past 4 seconds.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Planned Action:** MOVE FORWARD
+- **Speed Adjustment:** CONSTANT SPEED
+
+#### Summary:
+- The ego vehicle should continue moving forward while maintaining a constant speed. There are no immediate obstacles in the lane ahead, but the vehicle should be aware of parked cars on both sides of the road. The ego vehicle should stay within the lane markings and avoid any sudden lane changes or turns.
+
+### MPC Signals:
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 4.0,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": 0,
+  "yaw_rate_weight": 3
+}
+```
+
+### Explanation:
+- **Q (Speed Maintenance):** Set to 5 to prioritize maintaining the desired speed.
+- **R (Control Effort):** Set to 0.1 for smooth control adjustments.
+- **Q_h (Headway Maintenance):** Set to 3 to maintain a safe following distance.
+- **Desired Speed:** Set to 4.0 m/s to maintain a constant speed.
+- **Desired Headway:** Set to 2.0 seconds for safe following distance.
+- **Desired Yaw Rate:** Set to 0 for moving straight.
+- **Yaw Rate Weight:** Set to 3 for smooth control.

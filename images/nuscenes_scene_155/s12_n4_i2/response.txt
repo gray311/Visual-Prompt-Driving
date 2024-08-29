@@ -1,0 +1,57 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+- **Object IDs and Lanes:**
+  - **ID 20 (Car):** Left lane, moving away from the ego vehicle.
+  - **ID 21 (Car):** Right lane, stationary.
+  - **ID 22 (Car):** Center lane, stationary.
+  - **ID 23 (Laneline):** Right lane marking.
+  - **ID 24 (Laneline):** Center lane marking.
+  - **ID 25 (Car):** Right lane, stationary.
+  - **ID 27 (Car):** Right lane, stationary.
+  - **ID 29 (Car):** Right lane, stationary.
+  - **ID 30 (Car):** Left lane, moving away from the ego vehicle.
+  - **ID 31 (Car):** Right lane, stationary.
+  - **ID 32 (Car):** Left lane, moving away from the ego vehicle.
+  - **ID 33 (Car):** Left lane, moving away from the ego vehicle.
+  - **ID 34 (Car):** Left lane, moving away from the ego vehicle.
+  - **ID 35 (Laneline):** Left lane marking.
+
+#### Traffic Light:
+- No traffic lights are visible in the frames.
+
+#### Ego Analysis:
+- **Speed:** The ego vehicle's speed has been decreasing over the past 4 seconds from 6.86 m/s to 5.43 m/s.
+- **Acceleration:** The ego vehicle has been experiencing positive acceleration, indicating an attempt to maintain or increase speed.
+- **Turn Angle:** The ego vehicle has been making slight adjustments to the left, with the turn angle varying between 8.62 and 10.07 degrees.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Planned Action:** MOVE FORWARD
+- **Speed Adjustment:** ACCELERATION
+
+#### Summary:
+- The ego vehicle should continue moving forward while accelerating to maintain a safe and efficient speed. The vehicle should stay in its current lane, as there are no immediate obstacles within the lane. The stationary car (ID 22) in the center lane is far enough ahead to not pose an immediate threat.
+
+### MPC Signals:
+```json
+{
+  "Q": 5,
+  "R": 0.2,
+  "Q_h": 3,
+  "desired_speed": 7.0,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": 0,
+  "yaw_rate_weight": 3
+}
+```
+
+### Explanation:
+- **Q (Speed Maintenance):** Set to 5 to prioritize maintaining the desired speed.
+- **R (Control Effort):** Set to 0.2 for smoother control adjustments.
+- **Q_h (Headway Maintenance):** Set to 3 to ensure a safe following distance.
+- **Desired Speed:** Set to 7.0 m/s to increase speed slightly.
+- **Desired Headway:** Set to 2.0 seconds to maintain a safe distance from the vehicle ahead.
+- **Desired Yaw Rate:** Set to 0 as the vehicle should continue straight.
+- **Yaw Rate Weight:** Set to 3 for balanced control.

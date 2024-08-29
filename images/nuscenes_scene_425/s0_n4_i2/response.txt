@@ -1,0 +1,54 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+- **Notable Objects:**
+  - **Object 1 (Car)**: Positioned in the middle lane, moving slowly.
+  - **Object 2 (Car)**: Positioned in the middle lane, moving slowly.
+  - **Object 3 (Car)**: Positioned in the middle lane, moving slowly.
+  - **Object 4 (Car)**: Positioned in the middle lane, moving slowly.
+  - **Object 5 (Laneline)**: Positioned on the left side of the road.
+  - **Object 6 (Car)**: Positioned in the left lane, moving slowly.
+  - **Object 7 (Car)**: Positioned in the left lane, moving slowly.
+  - **Object 8 (Car)**: Positioned in the middle lane, moving slowly.
+  - **Object 9 (Car)**: Positioned in the middle lane, moving slowly.
+  - **Object 10 (Car)**: Positioned in the left lane, moving slowly.
+  - **Object 11 (Laneline)**: Positioned on the right side of the road.
+
+#### Traffic Light:
+- No traffic lights are visible in the frames.
+
+#### Ego Analysis:
+- **Speed**: The ego vehicle's speed has been relatively stable, with slight fluctuations between 7.09 m/s and 7.8 m/s.
+- **Acceleration**: The ego vehicle has been accelerating, with values ranging from 0.6 m/s² to 1.64 m/s².
+- **Turn Angle**: The ego vehicle has been turning to the left, with the turn angle increasing from 0.0 degrees to 19.65 degrees.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Behavior**: MOVE FORWARD
+- **Speed**: CONSTANT SPEED
+
+#### Summary:
+- The ego vehicle should continue moving forward while maintaining a constant speed. It should be aware of the surrounding vehicles, especially those in the middle lane, and maintain a safe distance. The ego vehicle should stay in its current lane and avoid any sudden lane changes or turns.
+
+### MPC Signals:
+
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 7.5,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": 0,
+  "yaw_rate_weight": 3
+}
+```
+
+- **Q**: Set to 5 to emphasize maintaining the desired speed.
+- **R**: Set to 0.1 for smoother control.
+- **Q_h**: Set to 3 for maintaining a safe following distance.
+- **Desired Speed**: Set to 7.5 m/s to maintain a constant speed.
+- **Desired Headway**: Set to 2.0 seconds for a safe following distance.
+- **Desired Yaw Rate**: Set to 0 as the vehicle should continue moving straight.
+- **Yaw Rate Weight**: Set to 3 for smoother control.

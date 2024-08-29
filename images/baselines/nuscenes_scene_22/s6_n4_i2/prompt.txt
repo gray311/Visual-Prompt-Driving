@@ -1,0 +1,12 @@
+Input:
+
+1. Ego states: 
+  - Speed (m/s): [5.41, 5.73, 6.2, 6.89]
+  - Acceleration (m/s²): [0.83, 0.82, 1.35, 1.17]
+  - Turn Angle (degree): [13.89, 16.76, 12.29, 9.75]
+
+2. Front view frames from the past 4 seconds and corresponding marked frames.
+
+3. Navigation command: Please keep forward along the road and be aware of surrounding vehicles.
+
+Output:

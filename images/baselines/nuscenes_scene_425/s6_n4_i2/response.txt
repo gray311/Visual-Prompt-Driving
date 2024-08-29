@@ -1,0 +1,47 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+- **Key Objects:**
+  - Construction cones and barriers ahead in the lane.
+  - Vehicles parked on the left side of the road.
+  - Construction signs indicating roadwork ahead.
+
+#### Traffic Light:
+- No traffic lights are visible in the immediate vicinity.
+
+#### Ego Analysis:
+- **Speed:** The ego vehicle's speed has been decreasing over the last 4 seconds, from 7.09 m/s to 5.54 m/s.
+- **Acceleration:** The acceleration has been relatively constant, around 0.93 m/s².
+- **Turn Angle:** The turn angle has been increasing, indicating the vehicle is likely navigating a curve or preparing to avoid obstacles.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Planned Action:** MOVE FORWARD while avoiding construction cones and barriers.
+- **Speed Adjustment:** DECELERATION to navigate through the construction zone safely.
+
+#### Summary:
+- The ego vehicle should continue moving forward, maintaining a safe speed and being cautious of the construction zone ahead. The vehicle should decelerate to ensure it can navigate around the construction cones and barriers safely.
+
+### MPC Signals:
+
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 3.0,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": 0.1,
+  "yaw_rate_weight": 3
+}
+```
+
+### Explanation:
+- **Q (Speed Maintenance):** Set to 5 to maintain a desired speed of 3.0 m/s through the construction zone.
+- **R (Control Effort):** Set to 0.1 for smoother control while navigating around obstacles.
+- **Q_h (Headway Maintenance):** Set to 3 to maintain a safe following distance.
+- **Desired Speed:** Set to 3.0 m/s to ensure safe navigation through the construction zone.
+- **Desired Headway:** Set to 2.0 seconds to maintain a safe distance from any potential obstacles or vehicles.
+- **Desired Yaw Rate:** Set to 0.1 to make slight adjustments in steering to avoid obstacles.
+- **Yaw Rate Weight:** Set to 3 for smoother control during slight steering adjustments.

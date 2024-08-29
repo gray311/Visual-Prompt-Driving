@@ -1,0 +1,57 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+1. **Motorcycle (ID: 13)**
+   - Lane: Initially on the side of the road, then moves into the main lane.
+   - Movement: Moving forward into the main lane.
+
+2. **Car (ID: 17)**
+   - Lane: In the main lane ahead.
+   - Movement: Stationary or moving slowly.
+
+3. **Car (ID: 16)**
+   - Lane: Parked on the side of the road.
+   - Movement: Stationary.
+
+#### Traffic Light:
+- No traffic lights are visible in the provided frames.
+
+#### Ego Analysis:
+- **Speed**: Increasing from 3.12 m/s to 5.79 m/s.
+- **Acceleration**: Positive, indicating an increase in speed.
+- **Turn Angle**: Slight right turn initially, then straightening out.
+
+### High-Level Plan:
+
+#### Behavior:
+- **MOVE FORWARD**: Continue moving forward along the road.
+- **STEER SLIGHTLY LEFT**: To avoid the motorcycle entering the lane.
+- **CONSTANT SPEED**: Maintain a steady speed to ensure safe navigation around the motorcycle and other vehicles.
+
+#### Speed:
+- **CONSTANT SPEED**: Maintain current speed to ensure smooth navigation and avoid sudden movements.
+
+#### Summary:
+- The ego vehicle should continue moving forward while maintaining a constant speed. It should steer slightly left to avoid the motorcycle entering the lane and ensure a safe distance from the parked car and the car ahead.
+
+### MPC Signals:
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 5.79,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": 0.1,
+  "yaw_rate_weight": 3
+}
+```
+
+### Explanation:
+- **Q (Speed Maintenance)**: Set to 5 to maintain the desired speed effectively.
+- **R (Control Effort)**: Set to 0.1 for smooth control adjustments.
+- **Q_h (Headway Maintenance)**: Set to 3 to maintain a safe following distance.
+- **Desired Speed**: Set to 5.79 m/s to maintain the current speed.
+- **Desired Headway**: Set to 2.0 seconds to ensure a safe distance from the vehicle ahead.
+- **Desired Yaw Rate**: Set to 0.1 for a slight left steer to avoid the motorcycle.
+- **Yaw Rate Weight**: Set to 3 for smooth control during the slight turn.

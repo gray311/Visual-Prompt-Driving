@@ -1,0 +1,56 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+1. **Object IDs and Lanes:**
+   - **Object 31 (Car):** Parked on the right side of the road.
+   - **Object 28 (Car):** Parked on the right side of the road.
+   - **Object 29 (Car):** Parked on the right side of the road.
+   - **Object 27 (Car):** Parked on the right side of the road.
+   - **Object 25 (Car):** Parked on the right side of the road.
+   - **Object 30 (Car):** Parked on the left side of the road.
+   - **Object 34 (Car):** Parked on the left side of the road.
+   - **Object 38 (Car):** Parked on the left side of the road.
+   - **Object 39 (Car):** Parked on the left side of the road.
+   - **Object 40 (Lane Line):** Lane line on the left side of the road.
+   - **Object 42 (Lane Line):** Lane line on the right side of the road.
+   - **Object 35 (Lane Line):** Lane line in the middle of the road.
+   - **Object 37 (Lane Line):** Lane line on the right side of the road.
+
+2. **Traffic Light:**
+   - No traffic lights are visible in the frames.
+
+3. **Ego Analysis:**
+   - **Speed:** Decreasing from 5.43 m/s to 3.65 m/s.
+   - **Acceleration:** Increasing from 0.54 m/s² to 0.96 m/s².
+   - **Turn Angle:** Varying between 7.05° and 9.9°.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Action:** MOVE FORWARD
+- **Speed Adjustment:** DECELERATION
+
+#### Summary:
+- The ego vehicle should continue moving forward while decelerating to maintain a safe distance from the stationary objects (parked cars) and the lane lines. There is no need to change lanes or stop as there are no immediate obstacles in the path.
+
+### MPC Signals:
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 2.5,
+  "desired_headway": 2,
+  "desired_yaw_rate": 0,
+  "yaw_rate_weight": 3
+}
+```
+
+### Explanation:
+- **Q (Speed Maintenance):** Set to 5 to maintain a desired speed while decelerating.
+- **R (Control Effort):** Set to 0.1 for smooth control.
+- **Q_h (Headway Maintenance):** Set to 3 to maintain a safe following distance.
+- **Desired Speed:** Set to 2.5 m/s to ensure a controlled deceleration.
+- **Desired Headway:** Set to 2 seconds to maintain a safe distance from the parked cars.
+- **Desired Yaw Rate:** Set to 0 as the vehicle should continue moving straight.
+- **Yaw Rate Weight:** Set to 3 for smooth control.

@@ -1,0 +1,60 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+1. **Object 19 (Bus)**:
+   - Lane: Right lane.
+   - Movement: Stationary.
+   - Impact: The bus is parked on the right side, not obstructing the ego vehicle's lane.
+
+2. **Object 42 (Car)**:
+   - Lane: Left lane.
+   - Movement: Stationary.
+   - Impact: The car is parked on the left side, not obstructing the ego vehicle's lane.
+
+3. **Object 29 (Car)**:
+   - Lane: Left lane.
+   - Movement: Stationary.
+   - Impact: The car is parked on the left side, not obstructing the ego vehicle's lane.
+
+4. **Object 41 (Car)**:
+   - Lane: Right lane.
+   - Movement: Stationary.
+   - Impact: The car is parked on the right side, not obstructing the ego vehicle's lane.
+
+#### Traffic Light:
+- No traffic lights are visible in the frames.
+
+#### Ego Analysis:
+- **Speed**: The ego vehicle's speed has increased from 6.53 m/s to 8.29 m/s over the last 4 seconds.
+- **Acceleration**: The acceleration has decreased from 1.11 m/s² to 0.38 m/s².
+- **Turn Angle**: The turn angle has slightly decreased, indicating a minor correction to maintain a straight path.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Action**: MOVE FORWARD
+- **Speed Adjustment**: CONSTANT SPEED
+
+#### Summary:
+- The ego vehicle should continue moving forward along the road, maintaining a constant speed. There are no immediate obstacles in the lane, and the parked vehicles on both sides do not pose a threat. The navigation command to keep forward and be aware of surrounding vehicles is adhered to.
+
+### MPC Signals:
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 8.29,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": 0,
+  "yaw_rate_weight": 3
+}
+```
+
+- **Q (Speed Maintenance)**: 5 (to maintain the desired speed effectively).
+- **R (Control Effort)**: 0.1 (for smooth control).
+- **Q_h (Headway Maintenance)**: 3 (to maintain a safe following distance).
+- **Desired Speed**: 8.29 m/s (current speed).
+- **Desired Headway**: 2.0 seconds (safe following distance).
+- **Desired Yaw Rate**: 0 rad/s (no turning required).
+- **Yaw Rate Weight**: 3 (for smooth control).

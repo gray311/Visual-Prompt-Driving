@@ -1,0 +1,51 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+1. **Pedestrians**:
+   - Multiple pedestrians are crossing the road in front of the ego vehicle.
+   - They are moving from right to left across the crosswalk.
+
+2. **Vehicles**:
+   - A red car is visible in the distance, moving away from the ego vehicle.
+   - No immediate threat from other vehicles within a 10-meter radius.
+
+#### Traffic Light:
+- No traffic lights are visible in the frames.
+
+#### Ego Analysis:
+- **Speed**: The ego vehicle's speed has been increasing slightly over the last 4 seconds, stabilizing at 5.21 m/s.
+- **Acceleration**: The acceleration has varied, with a peak of 1.16 m/s².
+- **Turn Angle**: The turn angle has been increasing, indicating the vehicle is in the process of turning.
+
+### High-Level Plan:
+
+#### Behavior:
+- **STOP**: Due to the presence of pedestrians crossing the road.
+
+#### Speed:
+- **DECELERATION TO ZERO**: To safely stop for the pedestrians.
+
+#### Summary:
+- The ego vehicle needs to stop to allow pedestrians to cross safely. Once the pedestrians have crossed, the vehicle can resume moving forward along the road.
+
+### MPC Signals:
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 0,
+  "desired_headway": 2,
+  "desired_yaw_rate": 0,
+  "yaw_rate_weight": 3
+}
+```
+
+### Explanation:
+- **Q (Speed Maintenance)**: Set to 5 to prioritize maintaining the desired speed after stopping.
+- **R (Control Effort)**: Set to 0.1 for smooth control.
+- **Q_h (Headway Maintenance)**: Set to 3 to maintain a safe following distance.
+- **Desired Speed**: Set to 0 to stop the vehicle.
+- **Desired Headway**: Set to 2 seconds for safety.
+- **Desired Yaw Rate**: Set to 0 as the vehicle will be stopping.
+- **Yaw Rate Weight**: Set to 3 for smooth control during the stop.

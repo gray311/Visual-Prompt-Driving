@@ -1,0 +1,49 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+- **Object 1 (Car)**: Initially in the left lane, moving out of the 10-meter radius.
+- **Object 3 (Car)**: In the left lane, moving forward.
+- **Object 4 (Car)**: In the right lane, moving forward.
+- **Object 7 (Car)**: Appears in the last frame, in the left lane, moving forward.
+- **Object 5 (Lane Line)**: Lane markings indicating the division between lanes.
+
+#### Traffic Light:
+- No traffic lights visible in the frames.
+
+#### Ego Analysis:
+- **Speed**: Decreasing over the last 4 seconds from 4.76 m/s to 3.2 m/s.
+- **Acceleration**: Varied, with a peak at 0.84 m/s², indicating deceleration.
+- **Turn Angle**: Slight right turn initially, then stabilizing.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Action**: MOVE FORWARD
+- **Speed**: CONSTANT SPEED
+
+#### Summary:
+- Continue moving forward while maintaining a constant speed.
+- Monitor the vehicles in the left and right lanes (Objects 3, 4, and 7).
+- Ensure safe distance from the vehicles ahead.
+
+### MPC Signals:
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 3.5,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": 0,
+  "yaw_rate_weight": 3
+}
+```
+
+### Explanation:
+- **Q (Speed Maintenance)**: Set to 5 to maintain a steady speed.
+- **R (Control Effort)**: Set to 0.1 for smooth control.
+- **Q_h (Headway Maintenance)**: Set to 3 to ensure a safe following distance.
+- **Desired Speed**: Set to 3.5 m/s to maintain a safe and steady pace.
+- **Desired Headway**: Set to 2.0 seconds for safe distance.
+- **Desired Yaw Rate**: Set to 0 as the vehicle should move straight.
+- **Yaw Rate Weight**: Set to 3 for balanced control.

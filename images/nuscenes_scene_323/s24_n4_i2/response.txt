@@ -1,0 +1,47 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+- **Object 2 (Car)**: Initially in the right lane, moving towards the left lane.
+- **Object 5 (Car)**: Parked on the right side of the road.
+- **Object 15 (Car)**: Far ahead in the same lane as ego.
+- **Lane Lines**: Clearly marked, with a speed hump ahead.
+
+#### Traffic Light:
+- No traffic lights are visible in the frames.
+
+#### Ego Analysis:
+- **Speed**: Increasing over the last 4 seconds (4.25 m/s to 5.84 m/s).
+- **Acceleration**: Positive, indicating acceleration.
+- **Turn Angle**: Varying, indicating slight steering adjustments.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Action**: MOVE FORWARD
+- **Speed Adjustment**: DECELERATION
+
+#### Summary:
+- **Overall Driving Plan**: Continue moving forward while decelerating slightly to navigate the speed hump safely. Maintain awareness of the car (Object 2) moving into the left lane and ensure a safe distance from the parked car (Object 5) on the right side.
+
+### MPC Signals:
+
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 4.0,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": 0,
+  "yaw_rate_weight": 3
+}
+```
+
+### Explanation:
+- **Q (Speed Maintenance)**: Set to 5 to ensure a smooth deceleration to the desired speed.
+- **R (Control Effort)**: Set to 0.1 for a moderate control effort, allowing for smooth adjustments.
+- **Q_h (Headway Maintenance)**: Set to 3 to maintain a safe following distance.
+- **Desired Speed**: Set to 4.0 m/s to safely navigate the speed hump.
+- **Desired Headway**: Set to 2.0 seconds for a safe distance from the car ahead.
+- **Desired Yaw Rate**: Set to 0 as the vehicle is moving straight.
+- **Yaw Rate Weight**: Set to 3 for balanced control.

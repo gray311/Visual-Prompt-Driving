@@ -1,0 +1,59 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+- **Object 10 (Bus)**:
+  - Lane: Left lane.
+  - Movement: Stationary or moving slowly.
+  - Impact: Initially in the left lane, then moves out of the frame, indicating it is not in the ego vehicle's path.
+  
+- **Object 10 (Car)**:
+  - Lane: Left lane.
+  - Movement: Stationary or moving slowly.
+  - Impact: Appears in the left lane but does not obstruct the ego vehicle's path.
+
+- **Object 11 (Lane Line)**:
+  - Lane: Center lane marking.
+  - Impact: Indicates the boundary of the ego vehicle's lane.
+
+- **Object 12 (Lane Line)**:
+  - Lane: Right lane marking.
+  - Impact: Indicates the boundary of the ego vehicle's lane.
+
+#### Traffic Light:
+- No traffic lights are visible in the frames.
+
+#### Ego Analysis:
+- **Speed**: Decreasing from 5.99 m/s to 4.94 m/s.
+- **Acceleration**: Varies, indicating slight adjustments in speed.
+- **Turn Angle**: Slight left turn initially, then straightening out.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Planned Action**: MOVE FORWARD.
+- **Speed Adjustment**: ACCELERATION to maintain a steady speed.
+
+#### Summary:
+- The ego vehicle should continue moving forward along the road, maintaining a steady speed while being aware of the surrounding vehicles. The bus and car in the left lane do not pose an immediate threat as they are stationary or moving slowly and are not in the ego vehicle's path.
+
+### MPC Signals:
+
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 2,
+  "desired_speed": 5.5,
+  "desired_headway": 2,
+  "desired_yaw_rate": 0,
+  "yaw_rate_weight": 3
+}
+```
+
+- **Q (Speed Maintenance)**: 5 (Moderate importance to maintain desired speed).
+- **R (Control Effort)**: 0.1 (Low to moderate control effort for smooth adjustments).
+- **Q_h (Headway Maintenance)**: 2 (Moderate importance for maintaining a safe following distance).
+- **Desired Speed**: 5.5 m/s (Target speed to maintain steady movement).
+- **Desired Headway**: 2 seconds (Safe following distance).
+- **Desired Yaw Rate**: 0 rad/s (No turning required).
+- **Yaw Rate Weight**: 3 (Moderate weight for smooth control).

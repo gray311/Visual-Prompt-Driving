@@ -1,0 +1,45 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+- **Key Objects Identified**:
+  - Motorcycle parked on the right side of the road.
+  - Trees and other stationary objects along the sides of the road.
+  - No moving vehicles or pedestrians detected within a 10-meter radius.
+
+#### Traffic Light:
+- No traffic lights are visible in the frames.
+
+#### Ego Analysis:
+- **Speed**: The ego vehicle's speed has been relatively constant, with a slight increase from 8.59 m/s to 8.79 m/s.
+- **Acceleration**: The acceleration has been gradually increasing from 0.51 m/s² to 0.79 m/s².
+- **Turn Angle**: The turn angle has been slightly increasing, indicating a minor adjustment in the vehicle's orientation.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Planned Action**: MOVE FORWARD
+
+#### Speed:
+- **Speed Adjustment**: CONSTANT SPEED
+
+#### Summary:
+- The ego vehicle should continue moving forward along the road, maintaining a constant speed. There are no immediate obstacles or traffic lights that require stopping or significant speed adjustments. The parked motorcycle on the right side of the road does not pose a threat as it is stationary and outside the driving lane.
+
+### MPC Signals:
+
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 2,
+  "desired_speed": 8.79,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": 0,
+  "yaw_rate_weight": 3
+}
+```
+
+### Summary:
+- **Behavior**: MOVE FORWARD
+- **Speed**: CONSTANT SPEED
+- **Overall Driving Plan**: Continue moving forward along the road, maintaining a constant speed, and be aware of the parked motorcycle on the right side of the road. No lane changes or stops are necessary.

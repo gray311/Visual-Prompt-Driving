@@ -1,0 +1,54 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+- **Object IDs and Lanes**:
+  - **ID 18 (Car)**: In the same lane as ego, moving forward.
+  - **ID 16 (Car)**: In the same lane as ego, moving forward.
+  - **ID 19 (Car)**: In the same lane as ego, moving forward.
+  - **ID 6 (Car)**: In the adjacent lane, moving forward.
+  - **ID 9 (Car)**: In the adjacent lane, moving forward.
+  - **ID 17 (Car)**: In the adjacent lane, moving forward.
+  - **ID 21 (Car)**: In the adjacent lane, moving forward.
+  - **ID 23 (Laneline)**: Marking the lane boundary.
+  - **ID 22 (Laneline)**: Marking the lane boundary.
+  - **Pedestrians**: On the sidewalk, not in the lane.
+
+#### Traffic Light:
+- No traffic light is visible in the frames.
+
+#### Ego Analysis:
+- **Speed**: Increasing from 2.98 m/s to 4.44 m/s.
+- **Acceleration**: Varies, with a peak of 0.83 m/s² and a low of 0.12 m/s².
+- **Turn Angle**: Increasing from 4.71 degrees to 15.64 degrees, indicating a gradual turn.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Planned Action**: MOVE FORWARD.
+- **Speed Adjustment**: ACCELERATION.
+
+#### Summary:
+- **Overall Driving Plan**: Continue moving forward while maintaining a safe distance from the vehicle ahead (ID 18). Adjust speed to maintain a safe following distance and be prepared to decelerate if the vehicle ahead slows down or if pedestrians enter the crosswalk.
+
+### MPC Signals:
+
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 5.0,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": 0,
+  "yaw_rate_weight": 3
+}
+```
+
+### Explanation:
+- **Q (Speed Maintenance)**: Set to 5 to prioritize maintaining the desired speed.
+- **R (Control Effort)**: Set to 0.1 for smooth control adjustments.
+- **Q_h (Headway Maintenance)**: Set to 3 to ensure a safe following distance.
+- **Desired Speed**: Set to 5.0 m/s to continue moving forward at a safe speed.
+- **Desired Headway**: Set to 2.0 seconds to maintain a safe distance from the vehicle ahead.
+- **Desired Yaw Rate**: Set to 0 as the vehicle is moving forward.
+- **Yaw Rate Weight**: Set to 3 for balanced control.

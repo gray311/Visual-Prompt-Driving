@@ -1,0 +1,54 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+1. **Bus (ID: 2)**
+   - Lane: Right lane, partially on the sidewalk.
+   - Movement: Stationary.
+   - Impact: No immediate impact as it is parked off the main road.
+
+2. **Car (ID: 9)**
+   - Lane: Right lane, further down the road.
+   - Movement: Stationary.
+   - Impact: No immediate impact as it is parked off the main road.
+
+#### Traffic Light:
+- No traffic lights are visible in the provided frames.
+
+#### Ego Analysis:
+- **Speed**: The ego vehicle's speed has been slightly decreasing over the past 4 seconds (from 9.0 m/s to 8.59 m/s).
+- **Acceleration**: The ego vehicle has been experiencing slight positive acceleration (from 0.35 m/s² to 0.51 m/s²).
+- **Turn Angle**: The ego vehicle's turn angle has been decreasing slightly (from 9.17 degrees to 8.94 degrees), indicating a slight rightward adjustment.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Move Forward**: Continue moving forward as the road ahead is clear.
+
+#### Speed:
+- **Constant Speed**: Maintain a constant speed as there are no immediate obstacles or traffic lights.
+
+#### Summary:
+- The ego vehicle should continue moving forward, maintaining a constant speed. There are no immediate obstacles in the lane, and the parked bus and car on the right side do not pose a threat.
+
+### MPC Signals:
+
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 8.59,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": 0,
+  "yaw_rate_weight": 3
+}
+```
+
+### Explanation:
+- **Q (Speed Maintenance)**: Set to 5 to maintain the desired speed effectively.
+- **R (Control Effort)**: Set to 0.1 for smooth control adjustments.
+- **Q_h (Headway Maintenance)**: Set to 3 to ensure a safe following distance.
+- **Desired Speed**: Set to 8.59 m/s to maintain the current speed.
+- **Desired Headway**: Set to 2.0 seconds to ensure a safe distance from any potential vehicles ahead.
+- **Desired Yaw Rate**: Set to 0 as the vehicle should continue straight.
+- **Yaw Rate Weight**: Set to 3 for balanced control.

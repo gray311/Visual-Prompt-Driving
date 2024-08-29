@@ -1,0 +1,47 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+- **Object IDs and Lanes**:
+  - **ID 4 (Bus)**: In the right lane, stationary.
+  - **ID 5 (Bus)**: In the left lane, stationary.
+  - **ID 2 (Car)**: In the left lane, stationary.
+  - **ID 3 (Bus)**: In the left lane, stationary.
+
+#### Traffic Light:
+- No traffic lights are visible in the frames.
+
+#### Ego Analysis:
+- **Speed**: The ego vehicle's speed has been decreasing over the last 4 seconds from 8.2 m/s to 5.84 m/s.
+- **Acceleration**: The ego vehicle's acceleration has been relatively stable, with minor fluctuations.
+- **Turn Angle**: The ego vehicle has been making a slight right turn, indicated by the negative turn angles.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Action**: MOVE FORWARD
+- **Speed Adjustment**: DECELERATION
+
+#### Summary:
+- The ego vehicle should continue moving forward while decelerating to maintain a safe distance from the stationary vehicles in the left lane. The right lane is clear, so the ego vehicle can proceed without changing lanes.
+
+### MPC Signals:
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 3.0,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": -0.1,
+  "yaw_rate_weight": 3
+}
+```
+
+### Explanation:
+- **Q (Speed Maintenance)**: Set to 5 to prioritize maintaining a safe speed while decelerating.
+- **R (Control Effort)**: Set to 0.1 for smoother control during deceleration.
+- **Q_h (Headway Maintenance)**: Set to 3 to ensure a safe following distance from the stationary vehicles.
+- **Desired Speed**: Set to 3.0 m/s to safely navigate past the stationary vehicles.
+- **Desired Headway**: Set to 2.0 seconds to maintain a safe distance.
+- **Desired Yaw Rate**: Set to -0.1 rad/s to continue the slight right turn.
+- **Yaw Rate Weight**: Set to 3 for balanced control during the maneuver.

@@ -1,0 +1,57 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+1. **Notable Objects:**
+   - **ID 26 (Bus):** In the left lane, stationary.
+   - **ID 25 (Car):** In the right lane, stationary.
+   - **ID 8 (Car):** In the center lane, moving forward.
+   - **ID 30 (Car):** In the left lane, stationary.
+   - **ID 32 (Laneline):** Center lane marking.
+   - **ID 27 (Laneline):** Left lane marking.
+   - **ID 31 (Car):** In the right lane, stationary.
+   - **ID 22 (Car):** In the right lane, stationary.
+   - **ID 29 (Bus):** In the right lane, stationary.
+   - **ID 34 (Car):** In the right lane, stationary.
+   - **ID 35 (Car):** In the right lane, stationary.
+   - **ID 33 (Car):** In the right lane, stationary.
+   - **ID 36 (Laneline):** Right lane marking.
+   - **ID 37 (Laneline):** Right lane marking.
+
+#### Traffic Light:
+- No traffic light visible in the frames.
+
+#### Ego Analysis:
+- **Speed:** Increasing from 6.4 m/s to 8.0 m/s.
+- **Acceleration:** Decreasing from 0.87 m/s² to 0.41 m/s².
+- **Turn Angle:** Slight left turn angle, decreasing from -12.11° to -12.16°.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Action:** CHANGE LANE TO RIGHT
+- **Speed Adjustment:** CONSTANT SPEED
+
+#### Summary:
+- The right lane appears clear for a lane change. The ego vehicle should change to the right lane while maintaining a constant speed. Ensure to monitor the stationary vehicles in the right lane and adjust if necessary.
+
+### MPC Signals:
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 8.0,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": -0.1,
+  "yaw_rate_weight": 3
+}
+```
+
+### Explanation:
+- **Q (Speed Maintenance):** Set to 5 to maintain the desired speed during the lane change.
+- **R (Control Effort):** Set to 0.1 for a smooth control response during the lane change.
+- **Q_h (Headway Maintenance):** Set to 3 to ensure a safe following distance.
+- **Desired Speed:** Set to 8.0 m/s to maintain the current speed.
+- **Desired Headway:** Set to 2.0 seconds for safe distance.
+- **Desired Yaw Rate:** Set to -0.1 for a slight right turn to change lanes.
+- **Yaw Rate Weight:** Set to 3 for smooth control during the lane change.

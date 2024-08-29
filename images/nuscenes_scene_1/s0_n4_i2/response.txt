@@ -1,0 +1,54 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+- **Object 1 (Car)**: 
+  - Lane: Middle lane
+  - Movement: Stationary or slow-moving (based on position change)
+- **Object 2 (Car)**: 
+  - Lane: Middle lane
+  - Movement: Stationary or slow-moving (based on position change)
+- **Object 3 (Lane Line)**: 
+  - Lane: Left lane
+  - Movement: Static
+- **Object 4 (Lane Line)**: 
+  - Lane: Right lane
+  - Movement: Static
+
+#### Traffic Light:
+- The traffic light is yellow, indicating that the vehicle should proceed with caution if it is already past the stop line.
+
+#### Ego Analysis:
+- **Speed**: The ego vehicle's speed has been relatively constant, with minor fluctuations around 8.5 m/s.
+- **Acceleration**: Minor acceleration changes, indicating stable driving.
+- **Turn Angle**: The ego vehicle has been turning slightly to the right over the past 4 seconds.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Action**: CHANGE LANE TO RIGHT
+- **Speed Adjustment**: CONSTANT SPEED
+
+#### Summary:
+- The ego vehicle will change to the right lane as it is clear and the navigation command suggests this action. The traffic light is yellow, so the vehicle should proceed with caution but maintain its current speed since it is already past the stop line.
+
+### MPC Signals:
+
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 8.5,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": -0.1,
+  "yaw_rate_weight": 3
+}
+```
+
+- **Q**: Set to 5 to maintain the desired speed quickly during the lane change.
+- **R**: Set to 0.1 for a fast response of the control during the lane change.
+- **Q_h**: Set to 3 to maintain a safe following distance.
+- **Desired Speed**: 8.5 m/s to keep the current speed.
+- **Desired Headway**: 2.0 seconds for a safe following distance.
+- **Desired Yaw Rate**: -0.1 rad/s for a slight right lane change.
+- **Yaw Rate Weight**: 3 for smoother control during the lane change.

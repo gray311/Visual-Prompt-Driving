@@ -63,7 +63,7 @@ system_message = """You are the brain of an autonomous vehicle making real-time 
      - Q (Speed Maintenance, 0-10): A higher value of Q increases the importance of maintaining the desired speed. During turning, the speed will be adjusted frequently, so it is necessary to increase Q to achieve a desired speed fastly (e.g., the value of Q is suitable around 5 for turning).
      - R (Control Effort, 0-3): Higher R for smoother control; adjustable based on scenario. During turning, the speed will be adjusted frequently, so it is necessary to reduce R to achieve a fast response of the control (e.g., the value of R is suitable around 0.05-0.2 for turning).
      - Q_h (Headway Maintenance, 1-5): Higher Q_h for safe following distance; adjustable as needed.
-   - Desired Speed: Target speed (m/s) based on road conditions and object proximity; increase within limits if clear.
+   - Desired Speed: Target speed (m/s) based on road conditions and object proximity; increase within limits if clear. The value 0.5-1.5 indicates you are making a turn.
    - Desired Headway: Safe headway (seconds) between ego and vehicle ahead.
    - Desired Yaw Rate ([-5, 5] rad/s): Positive for left turns, negative for right; 0 for straight. The value 0.05-0.2 indicates a lane change to the left, 0.05-0.2 indicates a slight left turn, and 2-5 indicates a left turn.
    - Yaw Rate Weight (1-5): Higher for smoother control; adjustable based on scenario.
@@ -88,7 +88,7 @@ system_message = """You are the brain of an autonomous vehicle making real-time 
       desired_yaw_rate: <Fill in the blank>,
       yaw_rate_weight: <Fill in the blank>,
     }"""
-
+    
 user_message = """Input:
 
 1. Ego states: 

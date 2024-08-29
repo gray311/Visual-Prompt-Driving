@@ -2,8 +2,10 @@ import os
 import shutil
 import numpy as np
 import torch
+import torch.nn.functional as F
 import matplotlib.pyplot as plt
 import supervision as sv
+from collections import defaultdict
 import copy
 import json
 import pickle
@@ -16,7 +18,16 @@ from utils.track_utils import sample_points_from_masks
 from utils.video_utils import create_video_from_images
 from utils.common_utils import CommonUtils
 from utils.mask_dictionary_model import MaskDictionaryModel, ObjectInfo
+from ultralytics import YOLO
 
+
+def has_image_files(folder_path):
+    files = os.listdir(folder_path)
+    for file in files:
+        if file.lower().endswith('.jpg'):
+            return True
+    
+    return False
 
 def calculate_iou(box1, box2):
     x_min_inter = max(box1[0], box2[0])
@@ -84,7 +95,9 @@ def build_model(sam2_checkpoint, model_cfg):
     processor = AutoProcessor.from_pretrained(model_id)
     grounding_model = AutoModelForZeroShotObjectDetection.from_pretrained(model_id).to(device)
 
-    return image_predictor, video_predictor, grounding_model, processor, device
+    lane_model = YOLO("./workspace/checkpoint/yolov8_seg.pt")
+
+    return image_predictor, video_predictor, grounding_model, lane_model, processor, device
 
 def get_filename(path):
     frame_names = [
@@ -96,14 +109,110 @@ def get_filename(path):
     return frame_names
 
 
-def generate_realtime_data(scene_id):
+def bounding_boxes_close(box1, box2, threshold=50):
+    x_min1, y_min1, x_max1, y_max1 = box1
+    x_min2, y_min2, x_max2, y_max2 = box2
+
+    left = max(x_min1, x_min2)
+    right = min(x_max1, x_max2)
+    top = max(y_min1, y_min2)
+    bottom = min(y_max1, y_max2)
+
+    if left < right and top < bottom:
+        return True
+    
+    distance = min(abs(x_min1 - x_max2), abs(x_max1 - x_min2), abs(y_min1 - y_max2), abs(y_max1 - y_min2))
+    return distance <= threshold
+
+def bounding_box_to_mask(image_shape, bounding_boxes):
+    masks = []
+    for box in bounding_boxes:
+        mask = np.zeros(image_shape, dtype=bool)
+        x_min, y_min, x_max, y_max = box
+        mask[int(x_min):int(x_max), int(y_min):int(y_max)] = True
+        masks.append(np.array(mask).T)
+    return masks
+
+
+def get_lane_masks(model, image_path, mode="yolo", threshold=200, plot_laneline=True):
+    results = model(image_path, conf=0.3)
+
+    for result in results:
+        boxes = result.boxes  
+        masks = result.masks 
+    
+    if masks is None:
+        return None, None, None
+ 
+    width, height = masks.shape[1:]
+    laneline_xy = sorted(masks.xy, key=(lambda x: np.sum(x, axis=0)[0] / x.shape[0]), reverse=False)
+    laneline_xy = [np.array([[0.0, height/2.0]])] + laneline_xy + [np.array([[width, height/2.0]])]
+    
+
+    # def mark_bool(): return defaultdict(bool)
+    # def mark_list(): return defaultdict(list)
+    # lane_mark = defaultdict(mark_bool)
+    # lane = defaultdict(mark_list)
+    # flag = False
+    # for i in range(len(laneline_xy)):
+    #     laneline_xy[i] = laneline_xy[i][laneline_xy[i][:, 1] <= 700]
+    #     laneline_xy[i] = laneline_xy[i][laneline_xy[i][:, 1] >= 400]
+    #     if laneline_xy[i].shape[0] == 0: continue
+    #     lane_left_x = np.sum(laneline_xy[i], axis=0)[0] / laneline_xy[i].shape[0]
+    #     lane_left_y = np.sum(laneline_xy[i], axis=1)[0] / laneline_xy[i].shape[1]
+    #     for j in range(i+1, len(laneline_xy)):
+    #         if lane_mark[i][j] == True: break
+    #         laneline_xy[j] = laneline_xy[j][laneline_xy[j][:, 1] <= 700]
+    #         laneline_xy[j] = laneline_xy[j][laneline_xy[j][:, 1] >= 400]
+    #         if laneline_xy[j].shape[0] == 0: continue
+    #         lane_right_x = np.sum(laneline_xy[j], axis=0)[0] / laneline_xy[j].shape[0]
+    #         lane_right_y = np.sum(laneline_xy[j], axis=1)[0] / laneline_xy[j].shape[1]
+    #         if lane_right_x - lane_left_x >= threshold:
+    #             x, y = (lane_left_x + lane_right_x) / 2.0, (lane_left_y + lane_right_y) / 2.0
+    #             if j == len(laneline_xy) - 1: 
+    #                 if flag == False:
+    #                     flag = True
+    #                     lane[i][j] = [lane_left_x + 150, 600 - 50, x + 250, 600 + 50]
+    #                     lane_mark[i][j] = True
+    #             elif i == 0:
+    #                 lane[i][j] = [lane_right_x - 250, 600 - 50, lane_right_x - 150, 600 + 50]
+    #                 lane_mark[i][j] = True
+    #             else:
+    #                 lane[i][j] = [x - 50, 600 - 50, x + 50, 600 + 50]
+    #                 lane_mark[i][j] = True
+    #             break
+
+    # lane_boxes = []
+    # for i in range(len(laneline_xy)):
+    #     for j in range(i+1, len(laneline_xy)):
+    #         if len(lane[i][j]) > 0:
+    #             lane_boxes.append(np.array(lane[i][j]))
+
+    # remove_idx = []
+    # for i in range(len(lane_boxes)):
+    #     for j in range(i+1, len(lane_boxes)): 
+    #         if bounding_boxes_close(lane_boxes[i], lane_boxes[j]):
+    #             remove_idx.append(j)
+    
+    # for idx in remove_idx:
+    #     del lane_boxes[idx]
+
+    # lane_number_masks = bounding_box_to_mask((width, height), lane_boxes)
+
+    lane_masks = F.interpolate(masks.data.unsqueeze(1), size=masks.orig_shape, mode='nearest').squeeze(1)
+
+
+    return lane_masks, None, None
+
+
+def generate_realtime_data(scene_id, loader):
     video_path = f"./images/nuscenes_scene_{scene_id}"
 
     if not os.path.exists(video_path):
         # shutil.rmtree(video_path)
         os.mkdir(video_path)
 
-    loader = NuscenesLoader(version="v1.0-trainval", dataroot="/data/yingzi_ma/Visual-Prompt-Driving/workspace/nuscenes", frequency=1)
+    # loader = NuscenesLoader(version="v1.0-trainval", dataroot="/data/yingzi_ma/Visual-Prompt-Driving/workspace/nuscenes", frequency=1)
     metadata = loader.load(scene_id)
     samples = metadata['sample_descriptions']
     for sample_idx, line in samples.items():
@@ -188,7 +297,7 @@ def run_agent(samples, video_dir, result_dir):
             agent = GPTEvaluator(api_key="")
     
         # navigation_instruction = "Please follow the car in front of you."
-        navigation_instruction = "Please keep forward along the road."
+        navigation_instruction = "The right lane looks clear. Can you change to the right lane?"
         ego_vel_str = "[" + ", ".join([str(round(item[0], 2)) for item in ego_states]) + "]"
         ego_accel_str = "[" + ", ".join([str(round(item[1], 2)) for item in ego_states]) + "]"
         ego_angle_str = "[" + ", ".join([str(round(item[2], 2)) for item in ego_states]) + "]"
@@ -237,16 +346,19 @@ if __name__=="__main__":
     scene_id_file = "./dataset/scene_id.json"
     sam2_checkpoint = "./workspace/checkpoint/sam2_hiera_large.pt"
     model_cfg = "sam2_hiera_l.yaml"
-    image_predictor, video_predictor, grounding_model, processor, device = build_model(sam2_checkpoint, model_cfg)
+    image_predictor, video_predictor, grounding_model, lane_model, processor, device = build_model(sam2_checkpoint, model_cfg)
+
+    loader = NuscenesLoader(version="v1.0-mini", dataroot="/data/yingzi_ma/Visual-Prompt-Driving/workspace/nuscenes", frequency=1)
     
     with open(scene_id_file, "r") as f:
         scene_id_split = json.load(f)
 
-    for i in scene_id_split['long_tail']:
-        if i != 217: continue
-        
+    overtake_scene_ids = [1]
+    
+    from tqdm import tqdm
+    for i in tqdm(overtake_scene_ids):
         samples, video_dir, output_dir, output_video_path, \
-        mask_data_dir, json_data_dir, result_dir, frame_names  = generate_realtime_data(scene_id=i)
+        mask_data_dir, json_data_dir, result_dir, frame_names  = generate_realtime_data(scene_id=i, loader=loader)
 
         # init video predictor state
         inference_state = video_predictor.init_state(video_path=video_dir, offload_video_to_cpu=True, async_loading_frames=True)
@@ -256,6 +368,10 @@ if __name__=="__main__":
         PROMPT_TYPE_FOR_VIDEO = "mask" # box, mask or point
         objects_count = 0
         use_ground_truth = False
+
+        # if has_image_files(result_dir):
+        #     run_agent(samples, video_dir, result_dir)
+        #     continue
 
         print(f"Frame num: {len(frame_names)}")
         for start_frame_idx in range(0, len(frame_names), step):
@@ -276,7 +392,7 @@ if __name__=="__main__":
                 # run Grounding DINO on the image
                 # we can use driving expert model to detect bounding box or lane segmentation
                 input_boxes, OBJECTS = [], [] 
-                for text in ['car.']:
+                for text in ['car, and bus.']:
                     inputs = processor(images=image, text=text, return_tensors="pt").to(device)
                     with torch.no_grad():
                         outputs = grounding_model(**inputs)
@@ -304,6 +420,7 @@ if __name__=="__main__":
                 box=input_boxes,
                 multimask_output=False,
             )
+
             # convert the mask shape to (n, H, W)
             if masks.ndim == 2:
                 masks = masks[None]
@@ -312,13 +429,22 @@ if __name__=="__main__":
             elif masks.ndim == 4:
                 masks = masks.squeeze(1)
 
+            # use YoloV8 to detect lane line
+            lane_masks, lane_number_masks, lane_boxes = get_lane_masks(lane_model, img_path)
+            
+            if lane_masks is not None:
+                lane_masks = lane_masks.cpu().numpy()
+                masks = np.concatenate((masks, lane_masks), axis=0)
+                input_boxes = input_boxes + input_boxes[-lane_masks.shape[0]:]
+                OBJECTS = OBJECTS + ['laneline'] * lane_masks.shape[0]
+
             # If you are using point prompts, we uniformly sample positive points based on the mask
             if mask_dict.promote_type == "mask":
                 mask_dict.add_new_frame_annotation(mask_list=torch.tensor(masks).to(device), box_list=torch.tensor(input_boxes), label_list=OBJECTS)
             else:
                 raise NotImplementedError("SAM 2 video predictor only support mask prompts")
 
-            objects_count = mask_dict.update_masks(tracking_annotation_dict=sam2_masks, iou_threshold=0.8, objects_count=objects_count)
+            objects_count = mask_dict.update_masks(tracking_annotation_dict=sam2_masks, iou_threshold=0.80, objects_count=objects_count)
             print("objects_count", objects_count)
             video_predictor.reset_state(inference_state)
             if len(mask_dict.labels) == 0:
@@ -367,12 +493,11 @@ if __name__=="__main__":
                     json.dump(json_data, f)
 
 
-
         CommonUtils.draw_masks_and_box_with_supervision(video_dir, mask_data_dir, json_data_dir, result_dir)
+        
         run_agent(samples, video_dir, result_dir)
 
-        break
-        # create_video_from_images(result_dir, output_video_path, frame_rate=15)
+        create_video_from_images(result_dir, output_video_path, frame_rate=15)
     
 
 

@@ -1,0 +1,48 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+1. **Bus (ID: 3)**:
+   - Lane: Right lane, stationary at a bus stop.
+   - Movement: Stationary.
+   - Impact: The bus is not obstructing the ego vehicle's lane but is close to the lane boundary.
+
+2. **Car (ID: 8)**:
+   - Lane: Right lane, further ahead.
+   - Movement: Stationary.
+   - Impact: The car is not in the immediate path of the ego vehicle.
+
+#### Traffic Light:
+- No traffic lights are visible in the frames.
+
+#### Ego Analysis:
+- **Speed**: The ego vehicle's speed has been increasing from 4.55 m/s to 5.99 m/s.
+- **Acceleration**: The acceleration values indicate a general increase in speed with slight variations.
+- **Turn Angle**: The ego vehicle has been making a slight right turn, indicated by negative turn angles.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Behavior**: MOVE FORWARD
+- **Speed**: CONSTANT SPEED
+
+#### Summary:
+- The ego vehicle should continue moving forward while maintaining a constant speed. The bus on the right lane is stationary and not obstructing the path. The ego vehicle should stay in its lane and proceed with caution, ensuring it does not veer into the bus's lane.
+
+### MPC Signals:
+
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 6.0,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": 0,
+  "yaw_rate_weight": 3
+}
+```
+
+### Summary:
+- **Behavior**: MOVE FORWARD
+- **Speed**: CONSTANT SPEED
+- **Conditions**: The ego vehicle should maintain its current lane and speed, ensuring it does not veer into the bus's lane. The bus is stationary and not obstructing the path, so the ego vehicle can proceed forward safely.

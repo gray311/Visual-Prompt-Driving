@@ -1,0 +1,54 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+- **Object 1 (Car)**: 
+  - Lane: Same lane as ego vehicle.
+  - Movement: Moving forward, maintaining a consistent distance from the ego vehicle.
+- **Object 2 (Car)**:
+  - Lane: Same lane as ego vehicle.
+  - Movement: Moving forward, maintaining a consistent distance from Object 1.
+- **Object 3 (Car)**:
+  - Lane: Adjacent lane to the right.
+  - Movement: Stationary.
+- **Object 4 (Pedestrian)**:
+  - Lane: Sidewalk.
+  - Movement: Walking along the sidewalk.
+
+#### Traffic Light:
+- No traffic lights are visible in the frames.
+
+#### Ego Analysis:
+- **Speed**: Decreasing over the last 4 seconds (7.81 m/s to 5.33 m/s).
+- **Acceleration**: Increasing slightly (0.69 m/s² to 1.43 m/s²).
+- **Turn Angle**: Slight adjustments, indicating minor steering corrections.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Action**: MOVE FORWARD
+- **Speed Adjustment**: DECELERATION
+
+#### Summary:
+- The ego vehicle should continue moving forward while decelerating to maintain a safe distance from the car ahead (Object 1). Given the navigation command to keep forward and be aware of surrounding vehicles, the ego vehicle should not change lanes or stop unless necessary.
+
+### MPC Signals:
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 4.5,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": 0,
+  "yaw_rate_weight": 2
+}
+```
+
+### Explanation:
+- **Q (Speed Maintenance)**: Set to 5 to prioritize maintaining a desired speed.
+- **R (Control Effort)**: Set to 0.1 for smooth control adjustments.
+- **Q_h (Headway Maintenance)**: Set to 3 to ensure a safe following distance.
+- **Desired Speed**: Set to 4.5 m/s to decelerate safely.
+- **Desired Headway**: Set to 2.0 seconds to maintain a safe distance from the car ahead.
+- **Desired Yaw Rate**: Set to 0 as the vehicle is moving straight.
+- **Yaw Rate Weight**: Set to 2 for balanced control.

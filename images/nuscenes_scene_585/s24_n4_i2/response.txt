@@ -1,0 +1,49 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+1. **Key Objects Identified:**
+   - **Object 4 (Truck)**: Positioned in the center lane, approximately 20 meters ahead, moving slowly.
+   - **Object 6 (Car)**: Parked on the left side of the road.
+   - **Object 12 (Car)**: Parked on the right side of the road.
+   - **Object 14, 15, 16 (Cars)**: Parked on the right side of the road.
+   - **Object 7, 8 (Cars)**: Parked on the left side of the road.
+
+#### Traffic Light:
+- No traffic lights are visible in the frames.
+
+#### Ego Analysis:
+- **Speed**: Decreasing over the last 4 seconds from 4.53 m/s to 2.21 m/s.
+- **Acceleration**: Increasing from 0.35 m/s² to 1.27 m/s².
+- **Turn Angle**: Slightly negative, indicating a slight leftward adjustment.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Planned Action**: MOVE FORWARD.
+- **Speed Adjustment**: ACCELERATION.
+
+#### Summary:
+- The ego vehicle should continue moving forward while accelerating to maintain a safe distance from the truck ahead (Object 4). Given the parked cars on both sides, the ego vehicle should stay centered in its lane and avoid any sudden lane changes.
+
+### MPC Control Signals:
+
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 3.5,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": 0,
+  "yaw_rate_weight": 3
+}
+```
+
+#### Explanation:
+- **Q (Speed Maintenance)**: Set to 5 to prioritize maintaining a steady speed.
+- **R (Control Effort)**: Set to 0.1 for smooth control adjustments.
+- **Q_h (Headway Maintenance)**: Set to 3 to ensure a safe following distance.
+- **Desired Speed**: Set to 3.5 m/s to gradually increase speed while maintaining safety.
+- **Desired Headway**: Set to 2.0 seconds to keep a safe distance from the truck ahead.
+- **Desired Yaw Rate**: Set to 0 as the vehicle should continue straight.
+- **Yaw Rate Weight**: Set to 3 for balanced control.

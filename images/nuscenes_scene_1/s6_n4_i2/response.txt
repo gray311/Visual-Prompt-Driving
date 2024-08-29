@@ -1,0 +1,54 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+- **Key Objects:**
+  - **ID 5 (Car):** Parked on the left side of the road.
+  - **ID 6 (Car):** Parked on the left side of the road.
+  - **ID 7 (Car):** Moving in the right lane.
+  - **ID 8 (Car):** Moving in the left lane.
+  - **ID 9 (Bus):** Moving in the left lane.
+  - **ID 10 (Car):** Moving in the left lane.
+  - **ID 16 (Car):** Parked on the right side of the road.
+
+- **Lanes:**
+  - **Left Lane:** Occupied by moving vehicles (IDs 8, 9, 10).
+  - **Right Lane:** Occupied by a moving vehicle (ID 7) and a parked vehicle (ID 16).
+
+#### Traffic Light:
+- The traffic light is yellow, indicating that the vehicle should prepare to stop if it is safe to do so.
+
+#### Ego Analysis:
+- **Speed:** The ego vehicle's speed has decreased from 8.91 m/s to 5.9 m/s over the last 4 seconds.
+- **Acceleration:** The ego vehicle has experienced an increase in acceleration, indicating a deceleration phase.
+- **Turn Angle:** The ego vehicle has been turning slightly to the right, as indicated by the negative turn angles.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Action:** Change lane to the right.
+- **Speed Adjustment:** Deceleration to match the speed of the vehicle in the right lane (ID 7).
+
+#### Summary:
+- The ego vehicle will change to the right lane, considering the right lane is clear except for a moving vehicle (ID 7) and a parked vehicle (ID 16). The ego vehicle will decelerate to match the speed of the vehicle in the right lane and ensure a safe lane change.
+
+### MPC Signals:
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 5.0,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": -0.1,
+  "yaw_rate_weight": 3
+}
+```
+
+### Explanation:
+- **Q (Speed Maintenance):** Set to 5 to ensure the vehicle maintains the desired speed during the lane change.
+- **R (Control Effort):** Set to 0.1 to allow for smooth control during the lane change.
+- **Q_h (Headway Maintenance):** Set to 3 to maintain a safe following distance.
+- **Desired Speed:** Set to 5.0 m/s to match the speed of the vehicle in the right lane.
+- **Desired Headway:** Set to 2.0 seconds to ensure a safe distance from the vehicle in the right lane.
+- **Desired Yaw Rate:** Set to -0.1 rad/s to facilitate a slight right turn for the lane change.
+- **Yaw Rate Weight:** Set to 3 to ensure smooth control during the lane change.

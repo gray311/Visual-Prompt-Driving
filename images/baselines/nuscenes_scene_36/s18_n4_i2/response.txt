@@ -1,0 +1,56 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+1. **Object 1 (Truck)**:
+   - Lane: Right lane (parked on the side of the road).
+   - Movement: Stationary.
+   - Impact: No immediate impact as it is parked.
+
+2. **Object 2 (Truck)**:
+   - Lane: Right lane (parked on the side of the road).
+   - Movement: Stationary.
+   - Impact: No immediate impact as it is parked.
+
+3. **Object 3 (Car)**:
+   - Lane: Right lane (moving forward).
+   - Movement: Moving forward.
+   - Impact: Needs to be monitored as it is in the same lane and moving forward.
+
+#### Traffic Light:
+- No traffic light visible in the frames.
+
+#### Ego Analysis:
+- Speed: Decreasing from 9.43 m/s to 8.93 m/s.
+- Acceleration: Increasing from 0.25 m/s² to 0.65 m/s².
+- Turn Angle: Increasing from 26.83 degrees to 28.96 degrees, indicating a slight right turn.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Behavior**: MOVE FORWARD
+- **Speed**: CONSTANT SPEED
+
+#### Summary:
+- The ego vehicle should continue moving forward while maintaining a constant speed. The parked trucks on the right lane do not pose an immediate threat. The car ahead in the right lane should be monitored, but there is no need for lane changes or stops at this moment.
+
+### MPC Signals:
+
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 9.0,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": 0.1,
+  "yaw_rate_weight": 3
+}
+```
+
+- **Q**: 5 (Moderate importance on maintaining desired speed).
+- **R**: 0.1 (Low control effort for smooth control).
+- **Q_h**: 3 (Moderate importance on maintaining a safe following distance).
+- **Desired Speed**: 9.0 m/s (Maintain a constant speed).
+- **Desired Headway**: 2.0 seconds (Safe following distance).
+- **Desired Yaw Rate**: 0.1 rad/s (Slight right turn).
+- **Yaw Rate Weight**: 3 (Moderate importance on smooth control).

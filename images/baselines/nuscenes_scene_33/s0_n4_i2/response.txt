@@ -1,0 +1,46 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+- **Key Objects**: 
+  - No vehicles or pedestrians detected within a 10-meter radius.
+  - Road signs indicating "No Through Rd from 02 Jan '15" and "Carpark B" are visible but do not impact immediate driving behavior.
+
+#### Traffic Light:
+- No traffic lights are visible in the provided frames.
+
+#### Ego Analysis:
+- **Speed**: The ego vehicle's speed has been increasing from 8.33 m/s to 9.07 m/s over the last 4 seconds.
+- **Acceleration**: The ego vehicle's acceleration has varied, with a peak at 1.16 m/s² and a decrease to 0.41 m/s².
+- **Turn Angle**: The ego vehicle has been turning right, with the turn angle increasing from 0.0° to -18.14°.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Planned Action**: MOVE FORWARD
+- **Speed Adjustment**: CONSTANT SPEED
+
+#### Summary:
+- The ego vehicle should continue moving forward along the road while maintaining a constant speed. There are no immediate obstacles or traffic lights to consider. The road curves to the right, so the vehicle should maintain its current trajectory.
+
+### MPC Signals:
+
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 1,
+  "desired_speed": 9.07,
+  "desired_headway": 2,
+  "desired_yaw_rate": -0.2,
+  "yaw_rate_weight": 3
+}
+```
+
+#### Explanation:
+- **Q (Speed Maintenance)**: Set to 5 to maintain the desired speed effectively.
+- **R (Control Effort)**: Set to 0.1 for smooth control adjustments, especially during the right turn.
+- **Q_h (Headway Maintenance)**: Set to 1 as there are no immediate vehicles ahead.
+- **Desired Speed**: Set to 9.07 m/s, the current speed of the ego vehicle.
+- **Desired Headway**: Set to 2 seconds for a safe following distance, though no vehicles are currently ahead.
+- **Desired Yaw Rate**: Set to -0.2 rad/s to maintain the right turn.
+- **Yaw Rate Weight**: Set to 3 for smoother control during the turn.

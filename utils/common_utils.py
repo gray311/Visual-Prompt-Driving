@@ -24,13 +24,20 @@ class CommonUtils:
             print(f"An error occurred while creating the path: {e}")
 
     @staticmethod
-    def draw_masks_and_box_with_supervision(raw_image_path, mask_path, json_path, output_path):
-        CommonUtils.creat_dirs(output_path)
-        raw_image_name_list = os.listdir(raw_image_path)
-        raw_image_name_list.sort()
+    def draw_masks_and_box_with_supervision(raw_image_path, mask_path, json_path, output_path, overwrite=False):
+        if overwrite == False:
+            CommonUtils.creat_dirs(output_path)
+            raw_image_name_list = os.listdir(raw_image_path)
+            raw_image_name_list.sort()
+            image_path_tmp = raw_image_path
+        else:
+            raw_image_name_list = os.listdir(output_path)
+            raw_image_name_list.sort()
+            image_path_tmp = output_path
+
         for raw_image_name in raw_image_name_list:
             if ".jpg" not in raw_image_name: continue
-            image_path = os.path.join(raw_image_path, raw_image_name)
+            image_path = os.path.join(image_path_tmp, raw_image_name)
             image = cv2.imread(image_path)
             height, width = image.shape[:2]
 
@@ -81,9 +88,14 @@ class CommonUtils:
                     instance_id = obj_item["instance_id"]
                     if instance_id not in unique_ids: # not a valid box
                         continue
+
                     # box coordinates
                     x1, y1, x2, y2 = obj_item["x1"], obj_item["y1"], obj_item["x2"], obj_item["y2"]
-                    all_object_boxes.append([x1, y1, x2, y2])
+                    if obj_item["class_name"] == "laneline":
+                        cx, cy = (x1 + x2) / 2, (y1 + y2) / 2
+                        all_object_boxes.append([cx-5, cy-5, cx, cy])
+                    else:
+                        all_object_boxes.append([x1, y1, x2, y2])
                     # box name
                     class_name = obj_item["class_name"]
                     
@@ -111,8 +123,32 @@ class CommonUtils:
                 f"{instance_id}: {class_name}" for instance_id, class_name in zip(all_object_ids, all_class_names)
             ]
             
+            # box_annotator = sv.BoxAnnotator()
+            # annotated_frame = box_annotator.annotate(scene=image.copy(), detections=detections)
+
             box_annotator = sv.BoxAnnotator()
-            annotated_frame = box_annotator.annotate(scene=image.copy(), detections=detections)
+            target_class = "laneline"
+            filtered_boxes = []
+            filtered_class_ids = []
+            filtered_masks = []
+            for box, cls_id, mask, class_name in zip(all_object_boxes, all_object_ids, all_object_masks, all_class_names):
+                if class_name != target_class:
+                    filtered_boxes.append(box)
+                    filtered_class_ids.append(cls_id)
+                    filtered_masks.append(mask)
+                
+            filtered_boxes = np.array(filtered_boxes)
+            filtered_class_ids = np.array(filtered_class_ids, dtype=np.int32)
+            filtered_masks = np.array(filtered_masks)
+
+            filtered_detections = sv.Detections(
+                xyxy=filtered_boxes,
+                mask=filtered_masks,  
+                class_id=filtered_class_ids,
+            )
+
+            annotated_frame = box_annotator.annotate(scene=image.copy(), detections=filtered_detections)
+
             label_annotator = sv.LabelAnnotator()
             annotated_frame = label_annotator.annotate(annotated_frame, detections=detections, labels=labels)
             mask_annotator = sv.MaskAnnotator()

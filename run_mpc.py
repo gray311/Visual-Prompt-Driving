@@ -66,7 +66,6 @@ def get_pred_fut_traj(result_path):
     mpc_list = mpc_list[:7]
     assert len(mpc_list) == 7, "lack of MPC control signals!"
 
-    print(mpc_dict)
 
     Q = mpc_list[0]  # Slightly increased speed maintenance weight for quicker accel/deceleration
     R = mpc_list[1]  # Slightly increased control effort weight for smoother accel/deceleration and turning
@@ -110,24 +109,25 @@ if __name__ == "__main__":
         gt_occ_map_woP[token] = torch.flip(gt_occ_map_woP[token], [-2])
     gt_occ_map = gt_occ_map_woP
 
+    future_second = 3
+    ts = future_second * 2
+    device = torch.device('cpu')
+
     for scene_name in os.listdir(scene_dir):
         if ".jpg" in scene_name: continue
-        if "scene_217" not in scene_name: continue
+        if "nuscenes" not in scene_name: continue
+        if "scene_336"  not in scene_name: continue
         frame_path = os.path.join(scene_dir, scene_name)
-
-        cnt = 0
-        future_second = 3
-        ts = future_second * 2
-        device = torch.device('cpu')
 
         metric_planning_val = PlanningMetric(ts).to(device)  
 
+
         for file_name in os.listdir(frame_path):
             if ".jpg" in file_name: continue
-            # if "s0" not in file_name: continue
+            if "s18" not in file_name: continue
             result_path = os.path.join(frame_path, file_name)
+
             print_testing_info(scene_name, file_name)
-            cnt += 1
 
             pred_fut_traj = get_pred_fut_traj(result_path)
 
@@ -171,8 +171,7 @@ if __name__ == "__main__":
 
             metric_planning_val(output_trajs[:, :ts], gt_trajectory[:, :ts], occupancy[:, :ts], file_name, gt_traj_mask) 
         
-        if cnt == 0: continue
-        
+    
         print(
             f"\n\n\nTesting in {scene_name}!"
         )
@@ -209,13 +208,13 @@ if __name__ == "__main__":
         print("{:<15} {:<5} {:<5} {:<5} {:<5} {:<5} {:<5} {:<5} {:<5}".format(*method))
 
 
-   
+    
 
 
-        
+            
 
 
 
 
-        
+            
 

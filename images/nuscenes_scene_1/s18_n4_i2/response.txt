@@ -1,0 +1,55 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+1. **Object IDs and Lanes:**
+   - **ID 8 (Bus):** In the right lane, moving forward.
+   - **ID 9 (Car):** In the right lane, moving forward.
+   - **ID 20 (Car):** In the left lane, moving forward.
+   - **ID 22 (Car):** Parked on the right side of the road.
+   - **ID 24 (Lane Line):** Double solid yellow line separating lanes.
+
+2. **Traffic Light:**
+   - No traffic light is visible in the provided images.
+
+3. **Ego Analysis:**
+   - **Speed:** Increasing from 1.78 m/s to 3.85 m/s.
+   - **Acceleration:** Increasing from 0.12 m/s² to 1.04 m/s².
+   - **Turn Angle:** Slightly decreasing from -11.17° to -11.05°, indicating a slight leftward orientation.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Action:** Change lane to the right.
+- **Speed Adjustment:** Maintain a constant speed initially, then decelerate slightly to ensure a safe lane change.
+
+#### Summary:
+- The right lane appears clear, but there are moving vehicles (bus and car) in the right lane. The ego vehicle should change lanes to the right while maintaining a safe distance from these vehicles. 
+
+### MPC Control Signals:
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 3.5,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": -0.1,
+  "yaw_rate_weight": 3
+}
+```
+
+### Detailed Plan:
+1. **Initiate Lane Change:**
+   - **Behavior:** Change lane to the right.
+   - **Speed:** Decelerate slightly to ensure a safe lane change.
+   - **Conditions:** Ensure there is enough space between the ego vehicle and the bus (ID 8) and car (ID 9) in the right lane.
+
+2. **Maintain Safe Distance:**
+   - **Behavior:** Maintain a constant speed once in the right lane.
+   - **Speed:** Adjust speed to match the flow of traffic in the right lane.
+   - **Conditions:** Keep a safe distance from the bus and car in the right lane.
+
+3. **Monitor Surroundings:**
+   - **Behavior:** Continuously monitor the surroundings for any changes in traffic conditions.
+   - **Speed:** Adjust speed as necessary to maintain safety and compliance with traffic rules.
+   - **Conditions:** Be prepared to decelerate or stop if any unexpected obstacles or changes in traffic conditions occur.

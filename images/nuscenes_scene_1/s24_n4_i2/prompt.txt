@@ -1,0 +1,12 @@
+Input:
+
+1. Ego states: 
+  - Speed (m/s): [3.85, 4.83, 5.64, 6.4]
+  - Acceleration (m/s²): [1.04, 1.11, 0.98, 0.87]
+  - Turn Angle (degree): [-11.05, -11.25, -11.65, -12.11]
+
+2. Front view frames from the past 4 seconds and corresponding marked frames.
+
+3. Navigation command: The right lane looks clear. Can you change to the right lane?
+
+Output:

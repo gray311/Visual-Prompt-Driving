@@ -1,0 +1,51 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+- **Object 1 (Bus)**: 
+  - Lane: Right lane.
+  - Movement: Stationary, parked on the side of the road.
+  - Distance: Approximately 30 meters ahead.
+
+- **Object 2 (Pedestrians)**:
+  - Lane: Right sidewalk.
+  - Movement: Walking away from the road.
+  - Distance: Approximately 35 meters ahead.
+
+#### Traffic Light:
+- No traffic lights are visible in the frames.
+
+#### Ego Analysis:
+- **Speed**: Increasing from 6.89 m/s to 8.6 m/s.
+- **Acceleration**: Decreasing from 1.17 m/s² to 0.8 m/s².
+- **Turn Angle**: Slightly fluctuating around 9 degrees, indicating a slight turn or lane adjustment.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Action**: MOVE FORWARD.
+- **Speed Adjustment**: CONSTANT SPEED.
+
+#### Summary:
+- The ego vehicle should continue moving forward along the road, maintaining a constant speed. There are no immediate obstacles within a 10-meter radius that require stopping or significant speed adjustments. The bus and pedestrians are far enough ahead not to impact the current driving plan.
+
+### MPC Signals:
+
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 2,
+  "desired_speed": 8.6,
+  "desired_headway": 2,
+  "desired_yaw_rate": 0,
+  "yaw_rate_weight": 3
+}
+```
+
+- **Q (Speed Maintenance)**: 5 (Moderate importance to maintain the current speed).
+- **R (Control Effort)**: 0.1 (Low control effort for smooth driving).
+- **Q_h (Headway Maintenance)**: 2 (Moderate importance for maintaining a safe following distance).
+- **Desired Speed**: 8.6 m/s (Current speed).
+- **Desired Headway**: 2 seconds (Safe following distance).
+- **Desired Yaw Rate**: 0 rad/s (No turn required).
+- **Yaw Rate Weight**: 3 (Moderate weight for smooth control).

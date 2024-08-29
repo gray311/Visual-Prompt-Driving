@@ -1,0 +1,45 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+1. **Object IDs and Lanes:**
+   - **ID 4 (Car):** In the left lane, stationary.
+   - **ID 5 (Car):** In the left lane, stationary.
+   - **ID 6 (Car):** In the right lane, stationary.
+   - **ID 8 (Car):** In the left lane, stationary.
+   - **ID 9 (Lane Line):** Marking the boundary of the lanes.
+
+2. **Traffic Light:**
+   - No traffic light is visible in the frames.
+
+3. **Ego Analysis:**
+   - **Speed:** Increasing from 2.28 m/s to 4.21 m/s.
+   - **Acceleration:** Positive, indicating an increase in speed.
+   - **Turn Angle:** Increasing from 21.97° to 37.26°, indicating a leftward turn.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Planned Action:** MOVE FORWARD
+- **Speed Adjustment:** CONSTANT SPEED
+
+#### Summary:
+- The ego vehicle should continue moving forward while maintaining a constant speed. The left lane is occupied by stationary vehicles, so the ego vehicle should stay in the right lane to avoid collisions. The turn angle indicates a slight leftward adjustment, which should be corrected to maintain a straight path.
+
+### MPC Signals:
+
+```json
+{
+  "Q": 5,
+  "R": 0.2,
+  "Q_h": 3,
+  "desired_speed": 4.21,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": 0,
+  "yaw_rate_weight": 3
+}
+```
+
+### Summary:
+- **Behavior:** MOVE FORWARD
+- **Speed:** CONSTANT SPEED
+- **Conditions:** Maintain a straight path in the right lane, avoiding stationary vehicles in the left lane. Adjust turn angle to correct the leftward drift.
