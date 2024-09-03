@@ -1,0 +1,48 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+- **Object 1 (Truck)**: 
+  - Lane: Left lane.
+  - Movement: Stationary or very slow-moving.
+  - Impact: Blocks the left lane, requiring careful navigation around it.
+
+- **Object 2 (White Car)**:
+  - Lane: Middle lane.
+  - Movement: Moving forward at a moderate speed.
+  - Impact: In the same lane as the ego vehicle, requiring maintenance of a safe following distance.
+
+- **Object 3 (Gray Truck)**:
+  - Lane: Middle lane.
+  - Movement: Moving forward at a moderate speed.
+  - Impact: In the same lane as the ego vehicle, requiring maintenance of a safe following distance.
+
+#### Traffic Light:
+- No traffic light visible in the frames.
+
+#### Ego Analysis:
+- **Speed**: Decreasing over the last 4 seconds (from 3.39 m/s to 2.28 m/s).
+- **Acceleration**: Varies, indicating adjustments in speed.
+- **Turn Angle**: Increasing, indicating a slight turn to the left.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Action**: MOVE FORWARD
+- **Speed**: DECELERATION
+- **Summary**: The ego vehicle should continue moving forward while maintaining a safe distance from the white car and gray truck ahead. Given the stationary truck in the left lane, the ego vehicle should stay in the middle lane and decelerate to maintain a safe following distance.
+
+### MPC Signals:
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 2.0,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": 0.0,
+  "yaw_rate_weight": 3
+}
+```
+
+### Summary:
+The ego vehicle should continue moving forward while decelerating to maintain a safe distance from the vehicles ahead. The stationary truck in the left lane requires the ego vehicle to stay in the middle lane. The desired speed is set to 2.0 m/s to ensure a safe following distance, with a desired headway of 2.0 seconds. The yaw rate is set to 0.0 as the vehicle should maintain its current lane.

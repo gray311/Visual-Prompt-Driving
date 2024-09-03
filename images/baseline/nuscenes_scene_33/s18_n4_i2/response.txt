@@ -1,0 +1,45 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+- **Object ID 1**: Vehicle ahead in the same lane, moving slowly or stationary.
+- **Object ID 2**: Parked vehicles on the left side of the road.
+
+#### Traffic Light:
+- No traffic light visible in the frames.
+
+#### Ego Analysis:
+- **Speed**: Decreasing over the last 4 seconds (from 9.56 m/s to 7.1 m/s).
+- **Acceleration**: Increasing (from 0.82 m/s² to 1.63 m/s²).
+- **Turn Angle**: Slightly increasing, indicating a slight left turn.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Behavior**: MOVE FORWARD
+- **Speed**: DECELERATION
+
+#### Summary:
+- The ego vehicle should continue moving forward while decelerating to maintain a safe distance from the vehicle ahead. The road curves slightly to the left, so the vehicle should adjust its speed and steering accordingly.
+
+### MPC Signals:
+
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 5.0,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": 0.1,
+  "yaw_rate_weight": 3
+}
+```
+
+### Explanation:
+- **Q (Speed Maintenance)**: Set to 5 to prioritize maintaining a safe and controlled speed during the slight left turn.
+- **R (Control Effort)**: Set to 0.1 to allow for smooth control adjustments.
+- **Q_h (Headway Maintenance)**: Set to 3 to ensure a safe following distance from the vehicle ahead.
+- **Desired Speed**: Set to 5.0 m/s to match the deceleration plan.
+- **Desired Headway**: Set to 2.0 seconds to maintain a safe distance from the vehicle ahead.
+- **Desired Yaw Rate**: Set to 0.1 rad/s to accommodate the slight left turn.
+- **Yaw Rate Weight**: Set to 3 to balance smooth control with the need to follow the road curvature.

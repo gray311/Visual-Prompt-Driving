@@ -1,0 +1,55 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+- **Key Objects:**
+  - **Orange Car (ID: 1):** Parked on the left side of the road.
+  - **Motorcycle (ID: 2):** Parked on the right side of the road.
+  - **Red Car (ID: 3):** Moving forward in the same lane as ego.
+  - **White Bus (ID: 4):** Moving forward in the same lane as ego.
+  - **Black Car (ID: 5):** Moving forward in the same lane as ego.
+  
+- **Lanes:**
+  - **Orange Car (ID: 1):** Stationary in the left lane.
+  - **Motorcycle (ID: 2):** Stationary in the right lane.
+  - **Red Car (ID: 3):** Moving forward in the center lane.
+  - **White Bus (ID: 4):** Moving forward in the center lane.
+  - **Black Car (ID: 5):** Moving forward in the center lane.
+
+#### Traffic Light:
+- No traffic lights are visible in the frames.
+
+#### Ego Analysis:
+- **Speed:** Ego vehicle was initially moving at 0.22 m/s but has been stationary for the last 3 seconds.
+- **Acceleration:** The ego vehicle has been accelerating slightly over the last 4 seconds.
+- **Turn Angle:** The ego vehicle has a slight left turn angle, indicating a slight leftward orientation.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Planned Action:** MOVE FORWARD
+- **Speed Adjustment:** ACCELERATION
+
+#### Summary:
+- The ego vehicle should move forward while accelerating to match the flow of traffic. There are no immediate obstacles in the lane ahead, and the parked vehicles on either side do not pose a threat. The ego vehicle should be aware of the moving vehicles ahead and maintain a safe following distance.
+
+### MPC Signals:
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 5.0,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": 0,
+  "yaw_rate_weight": 3
+}
+```
+
+### Explanation:
+- **Q (Speed Maintenance):** Set to 5 to prioritize maintaining the desired speed.
+- **R (Control Effort):** Set to 0.1 for smoother control.
+- **Q_h (Headway Maintenance):** Set to 3 to ensure a safe following distance.
+- **Desired Speed:** Set to 5.0 m/s to match the flow of traffic.
+- **Desired Headway:** Set to 2.0 seconds to maintain a safe distance from the vehicle ahead.
+- **Desired Yaw Rate:** Set to 0 as the vehicle should move straight.
+- **Yaw Rate Weight:** Set to 3 for smoother control.

@@ -1,0 +1,44 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+- **Object 1 (Black SUV)**:
+  - Lane: Same lane as ego vehicle.
+  - Movement: Slowing down and preparing to turn right.
+- **Object 2 (Pedestrians)**:
+  - Lane: On the sidewalk, moving parallel to the road.
+  - Movement: Walking along the sidewalk, not crossing the road.
+- **Object 3 (Bus)**:
+  - Lane: Opposite lane, moving forward.
+  - Movement: Approaching the intersection.
+
+#### Traffic Light:
+- No traffic light visible in the frames.
+
+#### Ego Analysis:
+- **Speed**: Decreasing over the last 4 seconds (from 4.9 m/s to 2.98 m/s).
+- **Acceleration**: Positive but decreasing, indicating a reduction in deceleration.
+- **Turn Angle**: Slightly increasing, indicating a slight turn to the left.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Behavior**: MOVE FORWARD
+- **Speed**: DECELERATION
+- **Summary**: The ego vehicle should continue moving forward while decelerating to maintain a safe distance from the black SUV ahead, which is preparing to turn right. Be cautious of pedestrians on the sidewalk and the bus in the opposite lane.
+
+### MPC Signals:
+
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 2.0,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": 0.1,
+  "yaw_rate_weight": 3
+}
+```
+
+### Summary:
+The ego vehicle should continue moving forward while decelerating to maintain a safe distance from the black SUV ahead, which is preparing to turn right. Be cautious of pedestrians on the sidewalk and the bus in the opposite lane. Adjust the speed and yaw rate to ensure smooth and safe navigation through the curve.

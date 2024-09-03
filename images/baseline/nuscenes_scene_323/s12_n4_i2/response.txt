@@ -1,0 +1,51 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+1. **Vehicle 1 (Black Sedan)**:
+   - **Position**: Parked on the left side of the road.
+   - **Lane**: Adjacent to the left lane.
+   - **Movement**: Stationary.
+
+2. **Vehicle 2 (Silver Sedan)**:
+   - **Position**: Ahead in the right lane.
+   - **Lane**: Right lane.
+   - **Movement**: Moving forward.
+
+3. **Vehicle 3 (Truck)**:
+   - **Position**: Parked on the right side of the road.
+   - **Lane**: Adjacent to the right lane.
+   - **Movement**: Stationary.
+
+4. **Pedestrian**:
+   - **Position**: On the right sidewalk.
+   - **Lane**: Not in the driving lane.
+   - **Movement**: Stationary.
+
+#### Traffic Light:
+- No traffic light is visible in the frames.
+
+#### Ego Analysis:
+- **Speed**: The ego vehicle's speed has varied, with a recent increase to 1.91 m/s.
+- **Acceleration**: The ego vehicle has been accelerating, with values ranging from 1.01 to 1.63 m/s².
+- **Turn Angle**: The ego vehicle has a slight left turn angle initially, followed by a significant right turn (-8.06 degrees).
+
+### High-Level Plan:
+- **Behavior**: MOVE FORWARD.
+- **Speed**: ACCELERATION.
+- **Summary**: The ego vehicle should continue moving forward, accelerating to maintain a safe distance from the vehicles ahead. The ego vehicle should stay in the left lane to avoid the parked truck and the moving silver sedan in the right lane.
+
+### MPC Signals:
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 2.5,
+  "desired_headway": 2,
+  "desired_yaw_rate": 0,
+  "yaw_rate_weight": 2
+}
+```
+
+### Summary:
+The ego vehicle should continue moving forward while accelerating to maintain a safe distance from the vehicles ahead. It should stay in the left lane to avoid the parked truck and the moving silver sedan in the right lane. The MPC signals are set to ensure smooth acceleration and safe headway maintenance.

@@ -1,0 +1,58 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+1. **Object ID 1 (Vehicle)**:
+   - Lane: Adjacent lane to the left.
+   - Movement: Moving parallel to ego, slightly ahead.
+   - Impact: Potential lane change risk if ego moves left.
+
+2. **Object ID 2 (Pedestrian)**:
+   - Lane: Crossing the road ahead, about 8 meters away.
+   - Movement: Walking from left to right.
+   - Impact: High risk of collision if ego continues without stopping.
+
+3. **Object ID 3 (Traffic Light)**:
+   - Lane: Directly ahead.
+   - State: Red.
+   - Impact: Ego must stop.
+
+#### Traffic Light:
+- **Red Light**: Ego must stop to comply with traffic rules.
+
+#### Ego Analysis:
+- **Speed**: Increasing from 0.14 m/s to 3.96 m/s over the last 4 seconds.
+- **Acceleration**: Consistent increase, indicating acceleration.
+- **Turn Angle**: Increasing turn angle, suggesting a leftward turn.
+
+### High-Level Plan:
+
+#### Behavior:
+- **STOP**: Due to the red traffic light and pedestrian crossing.
+
+#### Speed:
+- **DECELERATION TO ZERO**: To comply with the red light and avoid collision with the pedestrian.
+
+#### Summary:
+- The ego vehicle will decelerate to a stop due to the red traffic light and pedestrian crossing. It will remain stopped until the light turns green and the pedestrian has safely crossed.
+
+### MPC Signals:
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 5,
+  "desired_speed": 0,
+  "desired_headway": 2,
+  "desired_yaw_rate": 0,
+  "yaw_rate_weight": 3
+}
+```
+
+### Explanation:
+- **Q (Speed Maintenance)**: Set to 5 to ensure the vehicle decelerates to the desired speed (0 m/s) quickly.
+- **R (Control Effort)**: Set to 0.1 to allow for smooth deceleration.
+- **Q_h (Headway Maintenance)**: Set to 5 to maintain a safe distance from the pedestrian.
+- **Desired Speed**: Set to 0 m/s to stop the vehicle.
+- **Desired Headway**: Set to 2 seconds to ensure a safe stopping distance.
+- **Desired Yaw Rate**: Set to 0 as the vehicle is stopping and not turning.
+- **Yaw Rate Weight**: Set to 3 for smooth control during deceleration.

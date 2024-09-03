@@ -1,0 +1,52 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+1. **Bus (ID: 1)**:
+   - Lane: Right side, partially on the road.
+   - Movement: Stationary.
+   - Impact: No immediate threat as it is parked off the main driving lane.
+
+2. **Motorcycle (ID: 2)**:
+   - Lane: Right side, near the curb.
+   - Movement: Stationary.
+   - Impact: No immediate threat as it is parked off the main driving lane.
+
+#### Traffic Light:
+- No traffic light visible in the images.
+
+#### Ego Analysis:
+- **Speed**: Decreasing slightly from 9.0 m/s to 8.59 m/s.
+- **Acceleration**: Slight increase in acceleration from 0.35 m/s² to 0.51 m/s².
+- **Turn Angle**: Slightly decreasing from 9.17 degrees to 8.94 degrees, indicating a slight rightward adjustment.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Action**: MOVE FORWARD
+- **Speed**: CONSTANT SPEED
+
+#### Summary:
+- The ego vehicle should continue moving forward at a constant speed, maintaining awareness of the parked bus and motorcycle on the right side. There are no immediate obstacles or traffic lights requiring a stop or significant speed adjustment.
+
+### MPC Signals:
+
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 8.6,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": 0,
+  "yaw_rate_weight": 2
+}
+```
+
+### Explanation:
+- **Q (Speed Maintenance)**: Set to 5 to maintain a steady speed.
+- **R (Control Effort)**: Set to 0.1 for smooth control.
+- **Q_h (Headway Maintenance)**: Set to 3 to ensure a safe following distance.
+- **Desired Speed**: Set to 8.6 m/s to match the current speed trend.
+- **Desired Headway**: Set to 2.0 seconds for safe distance.
+- **Desired Yaw Rate**: Set to 0 as the vehicle should continue straight.
+- **Yaw Rate Weight**: Set to 2 for balanced control.

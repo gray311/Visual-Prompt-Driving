@@ -1,0 +1,51 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+- **Key Objects**: 
+  - Vehicles parked on both sides of the road.
+  - Pedestrian crossing ahead.
+  - No moving vehicles or pedestrians detected within a 10-meter radius.
+
+#### Traffic Light:
+- No traffic lights visible in the frames.
+
+#### Ego Analysis:
+- **Speed**: Increasing from 4.08 m/s to 6.89 m/s over the last 4 seconds.
+- **Acceleration**: Positive but decreasing, indicating a gradual increase in speed.
+- **Turn Angle**: Slight variations, indicating minor adjustments in direction.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Planned Action**: MOVE FORWARD
+
+#### Speed:
+- **Speed Adjustment**: CONSTANT SPEED
+
+#### Summary:
+- Continue moving forward while maintaining a constant speed.
+- Be aware of parked vehicles on both sides and the pedestrian crossing ahead.
+- No immediate need to stop or change lanes.
+
+### MPC Signals:
+
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 2,
+  "desired_speed": 6.89,
+  "desired_headway": 2,
+  "desired_yaw_rate": 0,
+  "yaw_rate_weight": 3
+}
+```
+
+### Explanation:
+- **Q (Speed Maintenance)**: Set to 5 to maintain the current speed.
+- **R (Control Effort)**: Set to 0.1 for smooth control.
+- **Q_h (Headway Maintenance)**: Set to 2 to ensure a safe following distance.
+- **Desired Speed**: Set to 6.89 m/s to match the current speed.
+- **Desired Headway**: Set to 2 seconds for safety.
+- **Desired Yaw Rate**: Set to 0 as no turning is required.
+- **Yaw Rate Weight**: Set to 3 for balanced control.

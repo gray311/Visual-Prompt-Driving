@@ -1,0 +1,54 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+- **Object 1 (ID: Truck)**: 
+  - Lane: Center
+  - Movement: Stationary
+  - Distance: Approximately 10 meters ahead
+- **Object 2 (ID: Car 1)**:
+  - Lane: Center
+  - Movement: Moving forward
+  - Distance: Approximately 12 meters ahead
+- **Object 3 (ID: Parked Cars)**:
+  - Lane: Both sides
+  - Movement: Stationary
+  - Distance: Varies, but not within immediate path
+
+#### Traffic Light:
+- No traffic lights visible in the frames.
+
+#### Ego Analysis:
+- **Speed**: Decreasing over the last 4 seconds (from 4.53 m/s to 2.21 m/s).
+- **Acceleration**: Increasing (from 0.35 m/s² to 1.27 m/s²).
+- **Turn Angle**: Slight left turn initially, followed by a slight right turn.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Action**: MOVE FORWARD
+- **Speed Adjustment**: ACCELERATION (to maintain a safe distance from the truck ahead)
+
+#### Summary:
+- The ego vehicle should continue moving forward while maintaining a safe distance from the truck ahead. Given the stationary truck and the moving car, the ego vehicle should accelerate slightly to maintain a safe following distance and avoid stopping unnecessarily.
+
+### MPC Signals:
+
+```json
+{
+  "Q": 5,
+  "R": 0.2,
+  "Q_h": 3,
+  "desired_speed": 3.0,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": 0,
+  "yaw_rate_weight": 2
+}
+```
+
+- **Q (Speed Maintenance)**: 5 (to achieve desired speed quickly)
+- **R (Control Effort)**: 0.2 (for smoother control)
+- **Q_h (Headway Maintenance)**: 3 (to maintain a safe following distance)
+- **Desired Speed**: 3.0 m/s (to maintain a safe distance from the truck ahead)
+- **Desired Headway**: 2.0 seconds (to ensure a safe following distance)
+- **Desired Yaw Rate**: 0 (no turning required)
+- **Yaw Rate Weight**: 2 (for smoother control)

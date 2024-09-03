@@ -1,0 +1,62 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+1. **Object 1 (Black Car)**:
+   - Lane: Parked on the left side of the road.
+   - Movement: Stationary.
+   - Impact: No immediate impact on ego vehicle's path.
+
+2. **Object 2 (Silver Car)**:
+   - Lane: Moving towards the ego vehicle from the opposite direction.
+   - Movement: Approaching.
+   - Impact: Potential impact if it moves into the ego vehicle's lane.
+
+3. **Object 3 (Truck)**:
+   - Lane: Parked on the right side of the road.
+   - Movement: Stationary.
+   - Impact: No immediate impact on ego vehicle's path.
+
+4. **Object 4 (Pedestrian/Worker)**:
+   - Lane: On the right side of the road, near the truck.
+   - Movement: Stationary.
+   - Impact: No immediate impact on ego vehicle's path.
+
+#### Traffic Light:
+- No traffic light visible in the frames.
+
+#### Ego Analysis:
+- **Speed**: Increasing from 1.91 m/s to 4.25 m/s.
+- **Acceleration**: Positive, indicating an increase in speed.
+- **Turn Angle**: Negative values indicate a left turn, but the angle is decreasing, suggesting a return to a straight path.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Behavior**: MOVE FORWARD.
+- **Speed**: CONSTANT SPEED.
+
+#### Summary:
+- The ego vehicle should continue moving forward while maintaining a constant speed. The silver car approaching from the opposite direction should be monitored closely to ensure it does not enter the ego vehicle's lane. The parked vehicles and pedestrian/worker do not pose an immediate threat.
+
+### MPC Signals:
+
+```json
+{
+  "Q": 5,
+  "R": 0.2,
+  "Q_h": 3,
+  "desired_speed": 4.25,
+  "desired_headway": 2,
+  "desired_yaw_rate": 0,
+  "yaw_rate_weight": 3
+}
+```
+
+### Explanation:
+- **Q (Speed Maintenance)**: Set to 5 to maintain the desired speed.
+- **R (Control Effort)**: Set to 0.2 for smoother control.
+- **Q_h (Headway Maintenance)**: Set to 3 to maintain a safe following distance.
+- **Desired Speed**: Set to 4.25 m/s, the current speed of the ego vehicle.
+- **Desired Headway**: Set to 2 seconds to ensure a safe distance from any potential obstacles.
+- **Desired Yaw Rate**: Set to 0 as the vehicle should continue straight.
+- **Yaw Rate Weight**: Set to 3 for smoother control.

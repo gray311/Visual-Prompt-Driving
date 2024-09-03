@@ -1,0 +1,49 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+- **Notable Objects**: 
+  - No immediate vehicles or pedestrians within a 10-meter radius.
+  - Road signs indicating directions and a car park.
+  - Road markings indicating a right turn ahead.
+
+#### Traffic Light:
+- No traffic lights visible in the frames.
+
+#### Ego Analysis:
+- **Speed**: Increasing slightly over the last 4 seconds (from 9.07 m/s to 9.51 m/s).
+- **Acceleration**: Positive and consistent, indicating a gradual increase in speed.
+- **Turn Angle**: Decreasing from -18.14 degrees to -9.4 degrees, indicating a leftward turn that is straightening out.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Planned Action**: MOVE FORWARD
+- **Speed Adjustment**: CONSTANT SPEED
+
+#### Summary:
+- Continue moving forward along the road.
+- Maintain a constant speed as there are no immediate obstacles or traffic lights.
+- Be aware of the road signs and markings indicating a right turn ahead.
+
+### MPC Control Signals:
+
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 2,
+  "desired_speed": 9.5,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": 0,
+  "yaw_rate_weight": 3
+}
+```
+
+#### Explanation:
+- **Q (Speed Maintenance)**: Set to 5 to maintain the desired speed.
+- **R (Control Effort)**: Set to 0.1 for smooth control.
+- **Q_h (Headway Maintenance)**: Set to 2 to ensure a safe following distance.
+- **Desired Speed**: Set to 9.5 m/s to maintain the current speed.
+- **Desired Headway**: Set to 2.0 seconds for safe distance.
+- **Desired Yaw Rate**: Set to 0 as the road ahead is straight.
+- **Yaw Rate Weight**: Set to 3 for balanced control.

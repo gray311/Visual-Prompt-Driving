@@ -1,0 +1,56 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+- **Object 1 (Silver Car)**: 
+  - Lane: Partially in the right lane, partially on the shoulder.
+  - Movement: Stationary.
+  - Impact: Requires slight maneuvering to the left to avoid collision.
+
+- **Object 2 (Truck)**: 
+  - Lane: Parked on the right shoulder.
+  - Movement: Stationary.
+  - Impact: No immediate impact as it is fully off the road.
+
+- **Object 3 (Black Car)**: 
+  - Lane: Parked on the right shoulder.
+  - Movement: Stationary.
+  - Impact: No immediate impact as it is fully off the road.
+
+#### Traffic Light:
+- No traffic lights visible in the frames.
+
+#### Ego Analysis:
+- **Speed**: Increasing from 4.25 m/s to 5.84 m/s.
+- **Acceleration**: Generally positive, indicating a gradual increase in speed.
+- **Turn Angle**: Varied from -5.41° to 10.83°, indicating some minor steering adjustments.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Action**: MOVE FORWARD.
+- **Speed Adjustment**: DECELERATION to navigate the speed hump and avoid the stationary car.
+
+#### Summary:
+- The ego vehicle should continue moving forward while decelerating to safely navigate the speed hump and avoid the stationary car partially in the right lane. Slight steering to the left may be necessary to maintain a safe distance from the stationary car.
+
+### MPC Signals:
+
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 3.0,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": 0.1,
+  "yaw_rate_weight": 3
+}
+```
+
+- **Q (Speed Maintenance)**: 5 (Moderate importance to maintain desired speed while navigating obstacles).
+- **R (Control Effort)**: 0.1 (Low to allow for responsive control adjustments).
+- **Q_h (Headway Maintenance)**: 3 (Moderate importance to maintain safe distance).
+- **Desired Speed**: 3.0 m/s (Reduced speed to safely navigate the speed hump and avoid the stationary car).
+- **Desired Headway**: 2.0 seconds (Safe following distance).
+- **Desired Yaw Rate**: 0.1 rad/s (Slight left steering to avoid the stationary car).
+- **Yaw Rate Weight**: 3 (Moderate weight for smooth control).

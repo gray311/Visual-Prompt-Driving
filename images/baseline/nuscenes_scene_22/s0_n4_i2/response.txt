@@ -1,0 +1,51 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+- **Object 1 (White Car)**:
+  - **Lane**: Parked on the left side of the road.
+  - **Movement**: Stationary.
+  - **Impact**: No immediate impact on ego vehicle's path as it is parked off the main lane.
+
+- **Object 2 (Bus)**:
+  - **Lane**: In the middle of the road ahead.
+  - **Movement**: Moving forward slowly.
+  - **Impact**: Potential obstacle if it slows down or stops.
+
+#### Traffic Light:
+- No traffic lights visible in the frames.
+
+#### Ego Analysis:
+- **Speed**: Increasing from 4.63 m/s to 5.41 m/s.
+- **Acceleration**: Positive, indicating a gradual increase in speed.
+- **Turn Angle**: Increasing from 0.0 to 13.89 degrees, indicating a slight left turn over the last 4 seconds.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Action**: MOVE FORWARD.
+- **Speed**: CONSTANT SPEED.
+
+#### Summary:
+- The ego vehicle should continue moving forward while maintaining a constant speed. The parked white car on the left does not pose a threat, but the bus ahead should be monitored for any sudden stops or changes in speed. The ego vehicle should be prepared to decelerate if the bus slows down significantly.
+
+### MPC Signals:
+
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 5.5,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": 0.0,
+  "yaw_rate_weight": 2
+}
+```
+
+- **Q (Speed Maintenance)**: Set to 5 to maintain the desired speed effectively.
+- **R (Control Effort)**: Set to 0.1 for smooth control adjustments.
+- **Q_h (Headway Maintenance)**: Set to 3 to ensure a safe following distance from the bus ahead.
+- **Desired Speed**: Set to 5.5 m/s to maintain a constant speed.
+- **Desired Headway**: Set to 2.0 seconds to keep a safe distance from the bus.
+- **Desired Yaw Rate**: Set to 0.0 as the vehicle should move straight.
+- **Yaw Rate Weight**: Set to 2 for smooth control.

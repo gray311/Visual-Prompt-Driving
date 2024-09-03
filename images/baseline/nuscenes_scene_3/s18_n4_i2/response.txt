@@ -1,0 +1,58 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+1. **Pedestrian (ID: 1)**:
+   - Location: Crossing the street from left to right in the first frame.
+   - Impact: Immediate need to stop to avoid collision.
+   
+2. **Vehicles (ID: 2, 3, 4)**:
+   - ID 2: Parked on the left side of the road.
+   - ID 3: Parked on the right side of the road.
+   - ID 4: Parked on the right side of the road.
+   - Impact: No immediate threat as they are stationary.
+
+3. **Construction Equipment (ID: 5)**:
+   - Location: Right side of the road.
+   - Impact: No immediate threat as it is stationary and off the road.
+
+#### Traffic Light:
+- No traffic light visible in the frames.
+
+#### Ego Analysis:
+- Speed: Decreasing trend from 8.5 m/s to 6.53 m/s.
+- Acceleration: Fluctuating, indicating adjustments in speed.
+- Turn Angle: Slightly increasing, indicating minor steering adjustments.
+
+### High-Level Plan:
+
+#### Behavior:
+- **STOP**: Due to the pedestrian crossing the street.
+
+#### Speed:
+- **DECELERATION TO ZERO**: To ensure the safety of the pedestrian.
+
+#### Summary:
+- The ego vehicle needs to stop immediately to allow the pedestrian to cross safely. After the pedestrian has crossed, the vehicle can continue moving forward, maintaining awareness of the parked vehicles and construction equipment on the sides of the road.
+
+### MPC Signals:
+
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 0,
+  "desired_headway": 2,
+  "desired_yaw_rate": 0,
+  "yaw_rate_weight": 3
+}
+```
+
+### Explanation:
+- **Q (Speed Maintenance)**: Set to 5 to ensure the vehicle stops quickly.
+- **R (Control Effort)**: Set to 0.1 for a smooth deceleration.
+- **Q_h (Headway Maintenance)**: Set to 3 to maintain a safe distance from the pedestrian.
+- **Desired Speed**: Set to 0 to stop the vehicle.
+- **Desired Headway**: Set to 2 seconds to ensure a safe stopping distance.
+- **Desired Yaw Rate**: Set to 0 as the vehicle should stop in a straight line.
+- **Yaw Rate Weight**: Set to 3 for balanced control.

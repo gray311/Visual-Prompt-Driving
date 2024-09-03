@@ -1,0 +1,56 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+1. **Object ID 1**: 
+   - Type: Vehicle
+   - Lane: Same lane as ego
+   - Distance: 8 meters ahead
+   - Movement: Moving forward at a similar speed
+
+2. **Object ID 2**: 
+   - Type: Pedestrian
+   - Lane: Crossing the road from the right side, 6 meters ahead
+   - Movement: Moving left to right across the road
+
+3. **Object ID 3**: 
+   - Type: Traffic Light
+   - Lane: Overhead, 10 meters ahead
+   - State: Green
+
+#### Traffic Light:
+- The traffic light is green, indicating that the ego vehicle can proceed.
+
+#### Ego Analysis:
+- **Speed**: The ego vehicle's speed has been slightly decreasing over the last 4 seconds, from 4.63 m/s to 4.28 m/s.
+- **Acceleration**: The acceleration has been fluctuating, indicating minor adjustments in speed.
+- **Turn Angle**: The turn angle has been increasing negatively, indicating a left turn.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Behavior**: MOVE FORWARD
+- **Speed**: DECELERATION (due to pedestrian crossing)
+- **Summary**: The ego vehicle should continue moving forward but decelerate to allow the pedestrian to cross safely. The vehicle ahead is maintaining a similar speed, so no immediate lane change is necessary.
+
+### MPC Signals:
+
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 2.0,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": 0,
+  "yaw_rate_weight": 3
+}
+```
+
+### Explanation:
+- **Q (Speed Maintenance)**: Set to 5 to ensure the vehicle maintains a desired speed after deceleration.
+- **R (Control Effort)**: Set to 0.1 for smooth control adjustments.
+- **Q_h (Headway Maintenance)**: Set to 3 to maintain a safe following distance.
+- **Desired Speed**: Set to 2.0 m/s to decelerate for the pedestrian crossing.
+- **Desired Headway**: Set to 2.0 seconds to ensure a safe distance from the vehicle ahead.
+- **Desired Yaw Rate**: Set to 0 as the vehicle is moving forward.
+- **Yaw Rate Weight**: Set to 3 for smoother control.

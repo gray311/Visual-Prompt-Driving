@@ -1,0 +1,55 @@
+### Grounded Reasoning:
+
+#### Object Analysis:
+1. **Object 1 (Truck on the left)**:
+   - Lane: Leftmost lane
+   - Movement: Stationary
+   - Impact: Blocking part of the left lane
+
+2. **Object 2 (Truck on the right)**:
+   - Lane: Rightmost lane
+   - Movement: Stationary
+   - Impact: Blocking part of the right lane
+
+3. **Object 3 (Construction Workers)**:
+   - Lane: Leftmost lane
+   - Movement: Directing traffic
+   - Impact: Indicating to proceed with caution
+
+4. **Object 4 (White Car ahead)**:
+   - Lane: Middle lane
+   - Movement: Moving forward
+   - Impact: Potential obstacle if it slows down or stops
+
+#### Traffic Light:
+- No traffic light visible in the frames.
+
+#### Ego Analysis:
+- **Speed**: The ego vehicle's speed has been relatively constant, with a slight decrease in the last second.
+- **Acceleration**: The ego vehicle has been accelerating slightly.
+- **Turn Angle**: The ego vehicle has been turning slightly to the right.
+
+### High-Level Plan:
+
+#### Behavior:
+- **Behavior**: MOVE FORWARD
+- **Speed**: CONSTANT SPEED
+- **Summary**: Proceed forward while maintaining a constant speed. Be cautious of the construction workers and the stationary trucks on both sides. Ensure to stay in the middle lane and maintain a safe distance from the white car ahead.
+
+### MPC Signals:
+```json
+{
+  "Q": 5,
+  "R": 0.1,
+  "Q_h": 3,
+  "desired_speed": 5.0,
+  "desired_headway": 2.0,
+  "desired_yaw_rate": 0,
+  "yaw_rate_weight": 3
+}
+```
+
+### Summary:
+- **Behavior**: MOVE FORWARD
+- **Speed**: CONSTANT SPEED
+- **Summary**: The ego vehicle should continue moving forward at a constant speed, staying in the middle lane, and maintaining a safe distance from the white car ahead. Be cautious of the construction workers and the stationary trucks on both sides.
